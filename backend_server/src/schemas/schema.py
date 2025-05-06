@@ -1,24 +1,36 @@
 import re
 from typing import List, Dict
 from datetime import datetime
-from pydantic import BaseModel, field_validator, ConfigDict
 
-class UserIdSchema(BaseModel):
-    id : int
-
-class UserRequestSchema(BaseModel):
-    id : int
-    username : str
-    password : str
-    is_admin : bool
-    is_staff : bool
-
-    model_config = ConfigDict(from_attributes=True)
+from marshmallow import Schema, fields, validates, ValidationError
 
 
-    @field_validator('password')
-    @classmethod
-    def password_validation(cls, value):
+class GetUserSchema(Schema):
+
+    id = fields.Int(dump_only=True)
+    username = fields.Str(required=True)
+    password = fields.Str(required=True, load_only=True)
+    is_staff = fields.Bool()
+    is_admin = fields.Bool()
+
+class UpdateUserSchema(Schema):
+
+    username = fields.Str()
+    password = fields.Str(load_only=True)
+    is_staff = fields.Bool()
+    is_admin = fields.Bool()
+
+
+class PostUserSchema(Schema):
+
+    id = fields.Int(dump_only=True)
+    username = fields.Str(required=True)
+    password = fields.Str(required=True, load_only=True)
+    is_staff = fields.Bool()
+    is_admin = fields.Bool()
+
+    @validates('password')
+    def validate_password(self, value: str, data_key: str):
         if len(value) <= 5:
             raise Exception("Password should contain 12 or more than 12 characters")
         if not re.search(r"[a-z]", value):
@@ -30,29 +42,14 @@ class UserRequestSchema(BaseModel):
         if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", value):
             raise ValueError("Password must contain at least one special character")
         return value
+     
+class LoginSchema(Schema):
+    username = fields.Str(required=True)
+    password = fields.Str(required=True, load_only=True)
+
+
+class TokensSchema(Schema):
+    id = fields.Int(required=True)
     
-class ProjectRequestSchema(BaseModel):
-    id : int
-    project_name : str
-    description : str
-    start_date : datetime
-    end_date : datetime
-    user_id : int
-
-    model_config = ConfigDict(from_attributes=True)
-
-class TaskRequestSchema(BaseModel):
-    id : int
-    task_name : str
-    description : str
-    due_date : datetime
-    status : str
-    user_id : int
-    project_id : int
-
-    model_config = ConfigDict(from_attributes=True)
-
-    
-
 
 
