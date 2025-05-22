@@ -15,10 +15,10 @@ from src.apis.google_auth import bp as SSOBlueprint
 
 app = Flask("__name___")
 
-CORS(app, resources={r"/*":{"origins": "http://localhost:8000"}})
+CORS(app, resources={r"/*":{"origins": "*"}})
 
 
-admin = Admin(app, url='/api/admin' name='My Admin Panel', template_mode='bootstrap4')
+admin = Admin(app, url='/api/admin', name='My Admin Panel', template_mode='bootstrap4')
 
 
 # configs
