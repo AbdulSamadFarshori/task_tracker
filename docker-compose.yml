@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  # Flask backend
+  backend:
+    build:
+      context: ./backend_server
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_APP=app.py
+    
+  # React frontend
+  frontend:
+    build:
+      context: ./frontend_server
+    ports:
+      - "8000:80" 

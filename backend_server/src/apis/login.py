@@ -15,11 +15,15 @@ class LoginViewApi(MethodView):
 
     @bp.arguments(LoginSchema)
     def post(self, reqs):
+        print(reqs)
         try:
             username = reqs["username"]
             password = reqs["password"]
+            print(username)
             data = UserModel.query.filter(UserModel.username == username).first()
+            print(data)
             if data.username == username and pbkdf2_sha256.verify(password, data.password):
+                print('get to')
                 access_token = create_access_token(identity=data.id, fresh=True)
                 refresh_token = create_refresh_token(identity=data.id)
                 check_record = TokensModel.query.filter(TokensModel.user_id == data.id).first()
@@ -27,11 +31,15 @@ class LoginViewApi(MethodView):
                     token_data = TokensModel(user_id=data.id, access_token=access_token, refresh_token=refresh_token)
                     token_data.save()
                 else:
-                    check_record.updated_at = datetime.utcnow
+                    check_record.updated_at = datetime.utcnow()
                     check_record.access_token = access_token
                     check_record.refresh_token = refresh_token
                     check_record.save()
-                return jsonify({"access_token": access_token}), 200 
+                return jsonify({"data" : {"username": data.username, 
+                                          "user_id": data.id, 
+                                          "admin": data.is_admin, 
+                                          "staff": data.is_staff, 
+                                          "access_token": access_token}}), 200 
             return abort(409, message="username or password invalid.")
         except Exception as e:
             return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500

@@ -50,6 +50,10 @@ class LoginSchema(Schema):
 
 class TokensSchema(Schema):
     id = fields.Int(required=True)
+
+
+class AuthSchema(Schema):
+    token = fields.Str(required=True)
     
 
 

@@ -6,6 +6,7 @@ class UserModel(BaseModel):
 
     username = db.Column(db.String(80), nullable=False)
     password = db.Column(db.String(128), nullable=False)
+    email = db.Column(db.String(225), nullable=False, default="sumir40@gmail.com")
     is_admin = db.Column(db.Boolean, default=False)
     is_staff = db.Column(db.Boolean, default=False)
     tokens = db.relationship("TokensModel", back_populates="users", lazy="dynamic")

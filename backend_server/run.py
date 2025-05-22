@@ -11,9 +11,12 @@ from src import models
 from src.admins.admins import UserAdmin, ProjectAdmin, TaskAdmin 
 from src.apis.users import bp as UserBlueprint
 from src.apis.login import bp as LoginBlueprint
+from src.apis.google_auth import bp as SSOBlueprint
 
 app = Flask("__name___")
-CORS(app)
+
+CORS(app, resources={r"/*":{"origins": "http://localhost:8000"}})
+
 
 admin = Admin(app, name='My Admin Panel', template_mode='bootstrap4')
 
@@ -57,6 +60,7 @@ with app.app_context():
 # Register Blueprints Here
 api.register_blueprint(UserBlueprint)
 api.register_blueprint(LoginBlueprint)
+api.register_blueprint(SSOBlueprint)
 
 
 # Register models with flask-admin
