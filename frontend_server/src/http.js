@@ -1,6 +1,4 @@
 
-
-
 export async function checkUserCerdentials(data){
     console.log(JSON.stringify(data))
     const response = await fetch('/api/login/', {
