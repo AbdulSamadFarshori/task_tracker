@@ -9,7 +9,7 @@ from marshmallow import ValidationError
 
 from flask_jwt_extended import jwt_required
 
-bp = Blueprint('user', __name__, url_prefix='/users', description="users related operations")
+bp = Blueprint('user', __name__, url_prefix='/api/users', description="users related operations")
 
 class UsersCRUDApiViews(MethodView):
 

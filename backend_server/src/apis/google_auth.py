@@ -13,7 +13,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token, get_jw
 from config import GOOGLE_CLIENT_ID
 
 
-bp = Blueprint('google-auth', __name__, url_prefix='/google-auth', description="google auth sso login operations")
+bp = Blueprint('google-auth', __name__, url_prefix='/api/google-auth', description="google auth sso login operations")
 
 class GoogleAuthApiView(MethodView):
 

@@ -3,7 +3,7 @@
 
 export async function checkUserCerdentials(data){
     console.log(JSON.stringify(data))
-    const response = await fetch('http://127.0.0.1:5000/login/', {
+    const response = await fetch('/api/login/', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {

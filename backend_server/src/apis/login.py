@@ -9,7 +9,7 @@ from src.models.tokens import TokensModel
 from src.schemas.schema import LoginSchema
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity
 
-bp = Blueprint('login', __name__, url_prefix='/login', description="Handle login operations")
+bp = Blueprint('login', __name__, url_prefix='/api/login', description="Handle login operations")
 
 class LoginViewApi(MethodView):
 
