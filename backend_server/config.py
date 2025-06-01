@@ -1,1 +1,13 @@
-GOOGLE_CLIENT_ID = '774680652106-b1ucoc7nv6tplkpn9gop6hhkk3nktlm3.apps.googleusercontent.com'
+import os
+from dotenv import load_dotenv
+
+load_dotenv("./.env")
+
+
+JWT_SECRET_KEY = os.getenv("JWT_SECRETKEY")
+SECRET_KEY = os.getenv("SECRET_KEY")
+DB_CONNECTION = os.getenv("DB_CONNECTION")
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+ORIGIN = "http://localhost:5000"
+
+

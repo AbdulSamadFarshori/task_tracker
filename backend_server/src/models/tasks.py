@@ -1,16 +1,8 @@
 from db import db
 from src.models.base import BaseModel
 from sqlalchemy import Enum as SQLAlchemyEnum
-from datetime import datetime
-from enum import Enum
-
-class Status(Enum):
-
-    NEW = "new"
-    IN_PROGRESS = "in-progress"
-    COMPLETED = "completed"
-    BLOCKED = "blocked"
-    NOT_STARTED = "not-started"
+from datetime import date
+from src.schemas.schema import TaskStatus
 
 
 class TaskModel(BaseModel):
@@ -18,8 +10,8 @@ class TaskModel(BaseModel):
 
     name = db.Column(db.String(80), unique=False, nullable=False)
     description = db.Column(db.Text, nullable=False)
-    due_date = db.Column(db.DateTime, default=datetime.utcnow)
-    status = db.Column(SQLAlchemyEnum(Status), default=Status.NEW)
+    due_date = db.Column(db.Date, default=date.today)
+    status = db.Column(db.Enum(TaskStatus), default=TaskStatus.IN_PROGRESS)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), unique=False, nullable=False)
     user = db.relationship("UserModel", back_populates='tasks')
     project_id = db.Column(db.Integer, db.ForeignKey("projects.id"), unique=False, nullable=False)

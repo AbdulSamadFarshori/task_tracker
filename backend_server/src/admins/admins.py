@@ -2,7 +2,7 @@ from flask_admin.contrib.sqla import ModelView
 
 
 class UserAdmin(ModelView):
-    column_list = ('created_at', 'updated_at', 'username', 'password', 'is_admin', 'is_staff')
+    column_list = ('created_at', 'updated_at', 'username', 'password', 'role' )
     # column_labels = {'username': 'Username', 'password': 'Password', 'is_admin': 'Is_Admin', 'is_staff': 'Is_staff'}
     # column_filters = ('username')
 
