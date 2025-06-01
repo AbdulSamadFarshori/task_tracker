@@ -1,10 +1,11 @@
 import { localServerURL, serverURL} from "./config";
 import { DeleteRequest, GetRequest, PostRequest, PutRequest } from "./utilies";
 
+const BaseURL = serverURL;
 
-const loginURL = localServerURL + '/api/login/';
-const UserURL = localServerURL + '/api/users/';
-const UserNameURL = localServerURL + '/api/users/username/'
+const loginURL = BaseURL + '/api/login/';
+const UserURL = BaseURL + '/api/users/';
+const UserNameURL = BaseURL + '/api/users/username/'
 
 export async function checkUserCerdentials(payload){
     const res = await PostRequest(loginURL, payload);
@@ -18,7 +19,7 @@ export async function getUserDetails(accessToken){
 
 export async function getUserName(accessToken){
     const res = await GetRequest(UserNameURL, accessToken);
-    return res.data
+    return res
 }
 
 export async function getUserByIdDetails(accessToken, id){
