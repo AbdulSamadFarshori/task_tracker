@@ -1,6 +1,8 @@
-import { localServerURL } from "./config";
+import { localServerURL, serverURL } from "./config";
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+const BaseURL = serverURL;
 
 export async function PostRequest(url, payload, accessToken){
     // console.log(JSON.stringify(data))
@@ -101,7 +103,7 @@ export async function DeleteRequest(url, accessToken){
 }
 
 export async function TokenVerification(accessToken){
-    const TokenVerifivcationURL = localServerURL + "/api/login/token-verification/";
+    const TokenVerifivcationURL = BaseURL + "/api/login/token-verification/";
     const res = await GetRequest(TokenVerifivcationURL, accessToken);
     return res.data.token_valid
 } 
