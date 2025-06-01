@@ -1,14 +1,20 @@
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 import EditForm from "../components/EditForm";
 import Navbar from "../components/Navbar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ErrorComponent from "../components/Error";
+import { getProjectDetailsById } from "../projectHttp";
+import useAuthCheck from "../utilies";
+
 
 export default function ProjectEditPage(){
 
     const navigate = useNavigate();
+    const paramsId = useParams();
     const logged = window.localStorage.getItem('logged');
     const isLogged = logged === 'true' ? true : false;
+
+    useAuthCheck();
 
     useEffect(() => {
         if (isLogged === false ) {
@@ -16,52 +22,45 @@ export default function ProjectEditPage(){
         }
       }, [isLogged, navigate]);
 
-    let Admin = window.localStorage.getItem('isAdmin');
-    let Staff = window.localStorage.getItem('isStaff');
+    let role = window.localStorage.getItem('role');
+    
+    const [projectDetail, setProjectDetail] = useState([]);
+    
+    useEffect(() => {
+        async function fetchProjectDetailById(){
+            const accessToken = window.localStorage.getItem('accessToken');
+            const data = await getProjectDetailsById(accessToken,  paramsId.id);
+            setProjectDetail(data.data)
+        }
+        fetchProjectDetailById();
+    }, []);
+    
 
-    const isAdmin = Admin === 'true' ? true : false ;
-    const isStaff = Staff === 'true' ? true : false ;
+    if (role === "ADMIN" && Object.keys(projectDetail).length > 0){
 
+        console.log(projectDetail)
 
-    if (isAdmin){
-
-        const data = [
-            {
-                id: 1,
-                name: "llp", 
-                description:"new start project for testing purpose.",
-                startDate: "2024-11-02",
-                endDate: "2025-06-05",
-                owner: "Abdul Samad",
-                status:"completed"
-        }]
-        
-        const name = data[0].name;
-        const description = data[0].description;
-        const startDate = data[0].startDate;
-        const endDate = data[0].endDate;
-        const dueDate = null;
-        const owner = data[0].owner;
-        const status = data[0].status;
+        const {id, project_name, description, start_date, end_date, users, status } = projectDetail;
+        const owner = users.username; 
         
         return (<Fragment>
             <Navbar ProjectStatus={true} UserStatus={true} TaskStatus={true} LoginStatus={true}/>
-            <EditForm 
+            <EditForm
+
                 project={true} 
                 task={false}
-                projectName={name}
-                name={name}
+                id={id} 
+                name={project_name}
                 description={description}
-                startDate={startDate}
-                endDate={endDate}
-                dueDate={dueDate}
+                startDate={start_date}
+                endDate={end_date}
                 owner={owner}
                 status={status}
                 />
         </Fragment>);
     }
     
-    else if(isStaff){
+    else if(role === "STAFF"){
         return <ErrorComponent/>
 
     }

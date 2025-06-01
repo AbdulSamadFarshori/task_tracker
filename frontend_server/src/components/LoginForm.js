@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './LoginFormStyle.css'
-import { checkUserCerdentials } from '../http'
+import { checkUserCerdentials } from '../userHttp'
 import { useNavigate } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import SingleSignOnButton from "./SSO";
@@ -32,18 +32,18 @@ export default function LoginForm(){
 
         if (res.status === 'success'){
 
-            const data = res.data.data;
+            const data = res.data;
 
-            const userId = data.username;
-            const username = data.user_id;
-            const isAdmin = data.admin;
-            const isStaff = data.staff;
+            console.log(data);
+
+            const userId = data.user_id;
+            const username = data.username;
+            const role = data.role;
             const accessToken = data.access_token;
             
             window.localStorage.setItem('userId', userId);
             window.localStorage.setItem('username', username);
-            window.localStorage.setItem('isAdmin', isAdmin);
-            window.localStorage.setItem('isStaff', isStaff);
+            window.localStorage.setItem('role', role);
             window.localStorage.setItem('accessToken', accessToken);
             window.localStorage.setItem('logged', true);
 

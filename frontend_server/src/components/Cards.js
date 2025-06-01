@@ -3,7 +3,7 @@ import './CardStyle.css'
 import SingleCard from './SingleCard';
 
 
-export default function ClipboardItem({admin}){
+export default function ClipboardItem({role}){
 
     const admincards = <Fragment>
         <SingleCard title={"Projects"} description={"View, create, and manage your projects efficiently."} link={"/project"}/>
@@ -12,7 +12,7 @@ export default function ClipboardItem({admin}){
 
 
     return (<div class="card-container">
-        {admin===true ? admincards : <div></div>}
+        {role === "ADMIN" ? admincards : <div></div>}
         <SingleCard title={"Tasks"} description={"View, create, and manage your tasks efficiently."} link={"/task"}/>
     </div>
     );

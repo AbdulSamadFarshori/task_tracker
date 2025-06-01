@@ -24,6 +24,7 @@ const router = createBrowserRouter([
   {path: '/task/:id', element: <TaskPage />},
   {path: '/user-task/:userId', element: <TaskPage />},
   {path: '/user-project/:userId', element: <ProjectPage />},
+  {path: '/project-task/:projectId', element: <TaskPage />},
   {path: '/user', element: <UserPage />},
   {path: '/create-user', element: <UserAddPage />},
   {path: '/edit-user/:userId', element: <UserEditPage />}

@@ -1,7 +1,11 @@
 import Navbar from "../components/Navbar";
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 import TableComponent from "../components/Table";
 import { useNavigate, useParams } from "react-router-dom";
+import { getAllTaskDetails, getProjectTaskDetails, getstaffTaskDetails } from "../taskHttp";
+import useAuthCheck from "../utilies";
+import { getstaffProjectDetails } from "../projectHttp";
+
 
 export default function TaskPage(){
 
@@ -9,89 +13,76 @@ export default function TaskPage(){
     const logged = window.localStorage.getItem('logged');
     const isLogged = logged === 'true' ? true : false;
 
+    useAuthCheck();
+
     useEffect(() => {
         if (isLogged === false ) {
           navigate('/login');
         }
       }, [isLogged, navigate]);
 
-    let Admin = window.localStorage.getItem('isAdmin');
-    let Staff = window.localStorage.getItem('isStaff');
-
-    const isAdmin = Admin === 'true' ? true : false ;
-    const isStaff = Staff === 'true' ? true : false ;
-
-
+    let role = window.localStorage.getItem('role');
     const idParams = useParams();
-    
-    if (isAdmin){
-        let data = [];
 
-        if (idParams.id){
-            console.log("id");
-            // create api which fetch all tasks which related to that project
-        }
-        else if(idParams.userId){
-            console.log("userId")
-        } 
-        else{
-            console.log("no");
-            data = [
-                {
-                id: 1,
-                name: "task-1", 
-                description:"new start project for testing purpose.",
-                dueDate: "11-02-2025",
-                owner: "Abdul Samad",
-                status:"in-progress",
-                project: "Project-3"
-            },
-                {
-                id: 2,
-                name: "task-2", 
-                description:"new start project for testing purpose.",
-                dueDate: "11-02-2025",
-                owner: "Abdul Samad",
-                status:"in-progress",
-                project: "Project-1"
-            },
-                {
-                id: 3,
-                name: "task-3", 
-                description:"new start project for testing purpose.",
-                dueDate: "11-02-2025",
-                owner: "Abdul Samad",
-                status:"completed",
-                project: "Project-2"
+    const [taskDeatailList, setTaskDetailList] = useState([]);
+
+    
+    useEffect(()=>{
+        async function fetchTaskDetails(){
+            if (idParams.projectId && role === "ADMIN"){
+                console.log("projectId");
+                const accessToken = window.localStorage.getItem('accessToken');
+                const res = await getProjectTaskDetails(idParams.projectId, accessToken);
+                setTaskDetailList(res.data);
+
             }
-            ]
+            else if(idParams.userId && role === "ADMIN"){
+                console.log("userId");
+                const accessToken = window.localStorage.getItem('accessToken');
+                const res = await getstaffTaskDetails(idParams.userId, accessToken);
+                console.log(res.data)
+                setTaskDetailList(res.data);        
+
+            }
+            else if(role === 'STAFF'){
+                console.log('staff');
+                const staffId = window.localStorage.getItem('userId');
+                const accessToken = window.localStorage.getItem('accessToken');
+                const res = await getstaffTaskDetails(staffId, accessToken);
+                console.log(res);
+                setTaskDetailList(res.data);
+
+            } 
+            else if (role === "ADMIN"){
+                const accessToken = window.localStorage.getItem('accessToken');
+                const res = await getAllTaskDetails(accessToken);
+                console.log(res.data);
+                setTaskDetailList(res.data);
+            }
         }
+    fetchTaskDetails();
+    }, [])
+
+    if (role === "ADMIN"){
 
         const colData = ["TaskID", "Name", "Description", "Due-Date", "Status", "Owner", "Project", "Edit", "Delete"];
+
         
         return (<Fragment>
             <Navbar ProjectStatus={true} UserStatus={true} TaskStatus={true} LoginStatus={true}/>
-            <TableComponent task={true} col={colData} data={data}/>
+            <TableComponent task={true} col={colData} data={taskDeatailList}/>
             
             
         </Fragment>)
 
     }
-    else if(isStaff){
-
-        let userId = window.localStorage.getItem('userId');
-
-        // fatch userId Data
-
-
-        const data = [];
-
+    else if(role === "STAFF"){
     
         const colData = ["TaskID", "Name", "Description", "Due-Date", "Status", "Owner", "Project", "Edit", "Delete"];
         
         return (<Fragment>
             <Navbar ProjectStatus={false} UserStatus={false} TaskStatus={false} LoginStatus={true}/>
-            <TableComponent task={true} col={colData} data={data}/>
+            <TableComponent task={true} col={colData} data={taskDeatailList}/>
             </Fragment>)
     }
     

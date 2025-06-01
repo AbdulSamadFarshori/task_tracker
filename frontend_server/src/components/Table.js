@@ -15,20 +15,20 @@ export default function TableComponent({user, project, task, col, data}){
 
     if (user){
 
-       title = "User List"
+       title = "User Details"
        rowData = data.map((item, index)=>(<UserRowComponent {...item}/>));
        addButton = <SearchBar project={false} task={false} user={true}/>;
 
     }
     else if(project){
-        title = "Project List"
+        title = "Project Details"
         rowData = data.map((item, index)=>(<ProjectRowComponent {...item}/>));
         addButton = <SearchBar project={true} task={false} user={false}/>;
         
     }
 
     else if(task){
-        title = "Task List"
+        title = "Task Details"
         rowData = data.map((item, index)=>(<TaskRowComponent {...item}/>));
         addButton = <SearchBar project={false} task={true} user={false}/>;
     }

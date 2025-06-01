@@ -3,6 +3,7 @@ import { Fragment, useEffect } from "react"
 import Navbar from "../components/Navbar"
 import ClipboardItem from "../components/Cards"
 import FootNavbar from "../components/FootNavbar"
+import useAuthCheck from '../utilies'
 
 export default function HomePage(){
 
@@ -10,39 +11,36 @@ export default function HomePage(){
     const logged = window.localStorage.getItem('logged');
     const isLogged = logged === 'true' ? true : false;
 
-    console.log(isLogged);
+
+    useAuthCheck();
+
 
     useEffect(() => {
         if (isLogged === false ) {
-          // If logged in, navigate to the dashboard page
           navigate('/login');
         }
       }, [isLogged, navigate]);
 
-    let Admin = window.localStorage.getItem('isAdmin');
-    let Staff = window.localStorage.getItem('isStaff');
-
-    const isAdmin = Admin === 'true' ? true : false ;
-    const isStaff = Staff === 'true' ? true : false ;
-
+    let role = window.localStorage.getItem('role');
+    
 
     const adminView = <Fragment>
                         <Navbar LoginStatus={true} ProjectStatus={true} UserStatus={true} TaskStatus={true}/>
-                        <ClipboardItem admin={isAdmin}/>
+                        <ClipboardItem role={role}/>
                         <FootNavbar />
                     </Fragment>
 
     const staffView = <Fragment>
         <Navbar LoginStatus={true} ProjectStatus={false} UserStatus={false} TaskStatus={false}/>
-        <ClipboardItem admin={isAdmin}/>
+        <ClipboardItem role={role}/>
         <FootNavbar />
     </Fragment>
 
-    if (isAdmin === true && isStaff === false){
+    if (role === "ADMIN"){
 
         return adminView
     }
-    if (isAdmin === false && isStaff === true){
+    if (role === "STAFF"){
         return staffView
     } 
     

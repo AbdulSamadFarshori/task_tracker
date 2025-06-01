@@ -1,13 +1,18 @@
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 import EditForm from "../components/EditForm";
 import Navbar from "../components/Navbar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { getTaskDetailsById } from "../taskHttp";
+import useAuthCheck from "../utilies";
 
 export default function TaskEditPage(){
 
     const navigate = useNavigate();
+    const paramsId = useParams();
     const logged = window.localStorage.getItem('logged');
     const isLogged = logged === 'true' ? true : false;
+
+    useAuthCheck();
 
     useEffect(() => {
         if (isLogged === false ) {
@@ -15,66 +20,57 @@ export default function TaskEditPage(){
         }
       }, [isLogged, navigate]);
 
-    let Admin = window.localStorage.getItem('isAdmin');
-    let Staff = window.localStorage.getItem('isStaff');
+    let role = window.localStorage.getItem('role');
 
-    const isAdmin = Admin === 'true' ? true : false ;
-    const isStaff = Staff === 'true' ? true : false ;
-
-    const data = [
-        {
-            id: 3,
-            name: "llp", 
-            description:"new start project for testing purpose.",
-            dueDate: "2024-11-02",
-            owner: "Abdul Samad",
-            status:"completed",
-            projectName:"project1"
-    }]
+    const [taskDetail, setTaskDetail] = useState([]);
+        
+        useEffect(() => {
+            async function fetchTaskDetailById(){
+                const accessToken = window.localStorage.getItem('accessToken');
+                const data = await getTaskDetailsById(paramsId.id, accessToken);
+                setTaskDetail(data.data)
+            }
+            fetchTaskDetailById();
+        }, []);
     
-    const name = data[0].name;
-    const projectName = data[0].projectName
-    const description = data[0].description;
-    const startDate = data[0].startDate;
-    const endDate = data[0].endDate;
-    const dueDate = data[0].dueDate
-    const owner = data[0].owner;
-    const status = data[0].status;
 
-    if (isAdmin){
+    if (role === "ADMIN" && Object.keys(taskDetail).length > 0){
+
+        console.log(taskDetail)
+
+        const {id, name, description, due_date, user, status, project } = taskDetail;
+
+        console.log(id);
 
         return (<Fragment>
             <Navbar ProjectStatus={true} UserStatus={true} TaskStatus={true} LoginStatus={true}/>
             <EditForm 
                 project={false} 
                 task={true}
-                projectName={projectName}
+                id={id}
+                projectName={project.project_name}
                 name={name}
                 description={description}
-                startDate={startDate}
-                endDate={endDate}
-                dueDate={dueDate}
-                owner={owner}
+                dueDate={due_date}
+                owner={user.username}
                 status={status}
                 />
         </Fragment>);
 
     }
-    else if(isStaff){
+    else if(role === "STAFF" && Object.keys(taskDetail).length > 0){
+        console.log(taskDetail)
+        const {id, name, description, due_date, user, status, project } = taskDetail;
+
     
         return (<Fragment>
             
-            <Navbar ProjectStatus={false} UserStatus={false} TaskStatus={true} LoginStatus={true}/>
+            <Navbar ProjectStatus={false} UserStatus={false} TaskStatus={false} LoginStatus={true}/>
             <EditForm 
-                project={false} 
-                task={true}
-                projectName={projectName}
-                name={name}
-                description={description}
-                startDate={startDate}
-                endDate={endDate}
-                dueDate={dueDate}
-                owner={owner}
+                project={false}
+                staff={true} 
+                task={false}
+                id={id}
                 status={status}
                 />
         </Fragment>);
