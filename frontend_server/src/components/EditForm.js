@@ -14,7 +14,7 @@ function ProjectEditForm({id, name, description, startDate, endDate, status, own
             async function getAllUserName(){
                 const accessToken = window.localStorage.getItem('accessToken');
                 const data = await getUserName(accessToken);
-                setUserNameListState(data); 
+                setUserNameListState(data.data); 
             }
             getAllUserName();
         }, []);
