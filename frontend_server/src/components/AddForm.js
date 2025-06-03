@@ -115,7 +115,7 @@ function TaskAddForm(){
             const accessToken = window.localStorage.getItem('accessToken');
             const data = await getUserName(accessToken);
             const projectData = await getAllProjectName(accessToken);
-            setUserListState(data);
+            setUserListState(data.data);
             setProjectListState(projectData);
         }
         getAllUserName();

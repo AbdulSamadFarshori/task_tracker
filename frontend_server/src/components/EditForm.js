@@ -189,7 +189,7 @@ function TaskEditForm({id, name, description, dueDate, owner, status, projectNam
             const accessToken = window.localStorage.getItem('accessToken');
             const data = await getUserName(accessToken);
             const projectData = await getAllProjectName(accessToken);
-            setUserNameListState(data);
+            setUserNameListState(data.data);
             setProjectListState(projectData); 
         }
         getAllUserName();
