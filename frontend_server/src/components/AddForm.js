@@ -13,7 +13,7 @@ function ProjectAddForm(){
         async function getAllUserName(){
             const accessToken = window.localStorage.getItem('accessToken');
             const data = await getUserName(accessToken);
-            setUserListState(data); 
+            setUserListState(data.data); 
         }
         getAllUserName();
     }, []);
