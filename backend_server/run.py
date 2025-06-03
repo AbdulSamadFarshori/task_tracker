@@ -16,9 +16,6 @@ from src.apis.google_auth import bp as SSOBlueprint
 from src.apis.tasks import bp as TaskBlueprint
 
 
-from config import JWT_SECRET_KEY, SECRET_KEY, DB_CONNECTION, ORIGIN
-
-
 app = Flask("__name___")
 
 CORS(app, resources={r"/*":{"origins": "*"}})
