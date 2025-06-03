@@ -2,7 +2,7 @@ from flask import jsonify, request
 from passlib.hash import pbkdf2_sha256
 from flask_smorest import Blueprint, abort
 from flask.views import MethodView
-from db import db
+from logger import logger 
 from src.models.users import UserModel
 from src.schemas.schema import GetUserSchema, PostUserSchema, UpdateUserSchema, UserNameSchema
 from marshmallow import ValidationError
@@ -23,6 +23,7 @@ class UsersCRUDApiViews(MethodView):
                 users = UserModel.query.all()
                 return GetUserSchema(many=True).dump(users), 200
         except Exception as e:
+            logger.error(e)
             return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
     
     @bp.arguments(PostUserSchema)
@@ -38,7 +39,7 @@ class UsersCRUDApiViews(MethodView):
         except ValidationError as e:
             return jsonify({"errors": e.errors()}), 400
         except Exception as e:
-            print(e)
+            logger.error(e)
             return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
 
     @jwt_required()
@@ -60,7 +61,7 @@ class UsersCRUDApiViews(MethodView):
                 except ValidationError as e:
                     return jsonify({"errors": e.errors()}), 400
                 except Exception as e:
-                    print(e)
+                    logger.error(e)
                     return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
             else:
                 return jsonify({"error": f"this {user_id} does not exist"}), 404
@@ -77,6 +78,7 @@ class UsersCRUDApiViews(MethodView):
                 data.delete()
                 return jsonify({'error': 'user has been removed from database'}), 201
         except Exception as e:
+            logger.error(e)
             return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
         
 
@@ -90,6 +92,7 @@ class GetUserNameAPIView(MethodView):
             result = user_schema.dump(data)
             return result, 200
         except Exception as e:
+            logger.error(e)
             return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
 
 user_view = UsersCRUDApiViews.as_view("user")

@@ -2,6 +2,7 @@ from flask import jsonify, request
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint, abort
+from logger import logger
 from src.models.tasks import TaskModel
 from src.models.users import UserModel
 from src.models.projects import ProjectModel
@@ -23,6 +24,7 @@ class TaskAPIView(MethodView):
                 data = TaskModel.query.all()
                 return GetTaskSchema(many=True).dump(data), 200
         except Exception as e:
+            logger.error(e)
             return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
         
     @jwt_required()
@@ -41,7 +43,7 @@ class TaskAPIView(MethodView):
             data.save()
             return jsonify({"status":"ok", "msg": "successfully added the task"}), 200
         except Exception as e:
-            print(e)
+            logger.error(e)
             return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
         
     
@@ -75,7 +77,7 @@ class TaskAPIView(MethodView):
             else:
                 return abort(404, message="Task is not available in the database.")
         except Exception as e:
-            print(e)
+            logger.error(e)
             return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
         
     @jwt_required()
@@ -89,6 +91,7 @@ class TaskAPIView(MethodView):
                 return abort(404, message="Task is not available in the database.")
         
         except Exception as e:
+            logger.error(e)
             return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
         
     
@@ -104,7 +107,7 @@ class StaffTaskAPIView(MethodView):
                 return abort(404, message="user id is none.")
         
         except Exception as e:
-            print(e)
+            logger.error(e)
             return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
         
     @jwt_required()
@@ -120,6 +123,7 @@ class StaffTaskAPIView(MethodView):
             else:
                 return abort(404, message="Task is not available in the database.")
         except Exception as e:
+            logger.error(e)
             return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
         
 class ProjectTaskAPIView(MethodView):
@@ -133,6 +137,7 @@ class ProjectTaskAPIView(MethodView):
             else:
                 return abort(404, message="project id is none.")
         except Exception as e:
+            logger.error(e)
             return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
 
 

@@ -5,7 +5,7 @@ from flask_smorest import Blueprint, abort
 from flask.views import MethodView
 from passlib.hash import pbkdf2_sha256
 from flask_jwt_extended.exceptions import JWTDecodeError
-from db import db
+from logger import logger
 from src.models.users import UserModel
 from src.models.tokens import TokensModel
 from src.schemas.schema import LoginSchema, LoginOutputSchema
@@ -44,7 +44,7 @@ class LoginViewApi(MethodView):
                 return result, 200 
             return abort(409, message="username or password invalid.")
         except Exception as e:
-            print(e)
+            logger.error(e)
             return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
         
 class TokenVerifyAPIView(MethodView):

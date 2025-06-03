@@ -1,12 +1,9 @@
-import { localServerURL, serverURL} from "./config";
+import {BaseURL} from "./config";
 import { DeleteRequest, GetRequest, PostRequest, PutRequest } from "./utilies";
 
 
-const BaseURL = serverURL;
-
-
 const projectURL = BaseURL + "/api/projects/";
-const projectNameURL = BaseURL + "/api/projects/project-name/"
+const projectNameURL = BaseURL + "/api/projects/project-name/";
 
 export async function getAllProjectDetails(accessToken){
     const res = await GetRequest(projectURL, accessToken);

@@ -18,7 +18,7 @@ export async function PostRequest(url, payload, accessToken){
         });
         const resData = await response.json();
         if  (!response.ok){
-            return {status:'fail', data: undefined}
+            return {status:'fail', data: []}
         }
         else{
             return {status:'success', data: resData}
@@ -35,7 +35,7 @@ export async function PostRequest(url, payload, accessToken){
         });
         const resData = await response.json();
         if  (!response.ok){
-            return {status:'fail', data: undefined}
+            return {status:'fail', data: []}
         }
         else{
             return {status:'success', data: resData}
@@ -54,7 +54,7 @@ export async function GetRequest(url, accessToken){
     const resData = await response.json();
     
     if  (!response.ok){
-        return {status:'fail', data: undefined}
+        return {status:'fail', data: []}
     }
     else{
         return {status:'success', data: resData}
@@ -76,7 +76,7 @@ export async function PutRequest(url, payload, accessToken){
     console.log(resData);
 
     if  (!response.ok){
-        return {status:'fail', data: undefined}
+        return {status:'fail', data: []}
     }
     else{
         return {status:'success', data: resData}
@@ -94,7 +94,7 @@ export async function DeleteRequest(url, accessToken){
     const resData = await response.json();
     
     if  (!response.ok){
-        return {status:'fail', data: undefined}
+        return {status:'fail', data: []}
     }
     else{
         return {status:'success', data: resData}

@@ -3,6 +3,7 @@ from flask_smorest import Blueprint, abort
 from src.models.projects import ProjectModel
 from src.models.users import UserModel
 from flask.views import MethodView
+from logger import logger
 from flask_jwt_extended import jwt_required
 from src.schemas.schema import GetProjectSchema, PostProjectSchema, UpdateProjectSchema, ProjectNameListSchema
 
@@ -18,6 +19,7 @@ class ProjectApiView(MethodView):
                 data = ProjectModel.query.filter(ProjectModel.id==project_id).first()
                 return GetProjectSchema(many=False).dump(data), 200
             except Exception as e:
+                logger.error(e)
                 return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
         else:
             data = ProjectModel.query.all()
@@ -35,7 +37,7 @@ class ProjectApiView(MethodView):
             data.save()
             return jsonify({"status":"ok", "msg": "successfully added new project"}), 200
         except Exception as e:
-            print(e)
+            logger.error(e)
             return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
         
     @jwt_required()
@@ -63,7 +65,7 @@ class ProjectApiView(MethodView):
             else:
                 return abort(404, message="Project is not available in the database.")
         except Exception as e:
-            print(e)
+            logger.error(e)
             return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
 
     @jwt_required()
@@ -76,6 +78,7 @@ class ProjectApiView(MethodView):
             else:
                 return abort(404, message="Project is not available in the database.")
         except Exception as e:
+            logger.error(e)
             return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
 
 
@@ -87,6 +90,7 @@ class ProjectNameListApiView(MethodView):
             data = ProjectModel.query.all()
             return ProjectNameListSchema(many=True).dump(data)
         except Exception as e:
+            logger.error(e)
             return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
 
 
@@ -100,6 +104,7 @@ class GetProjectByUserId(MethodView):
                 return GetProjectSchema(many=True).dump(data)
             return abort(404, message="user id is none.")
         except Exception as e:
+            logger.error(e)
             return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
 
 

@@ -1,7 +1,6 @@
-import { localServerURL, serverURL} from "./config";
+import {BaseURL} from "./config";
 import { DeleteRequest, GetRequest, PostRequest, PutRequest } from "./utilies";
 
-const BaseURL = serverURL;
 
 const loginURL = BaseURL + '/api/login/';
 const UserURL = BaseURL + '/api/users/';

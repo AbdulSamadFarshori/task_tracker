@@ -16,7 +16,7 @@ class ProjectModel(BaseModel):
     status = db.Column(db.Enum(ProjectStatus), default=ProjectStatus.NEW)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), unique=False, nullable=False)
     users = db.relationship("UserModel", back_populates="projects")
-    tasks = db.relationship("TaskModel", back_populates="project", lazy="dynamic")
+    tasks = db.relationship("TaskModel", back_populates="project", lazy="dynamic", cascade="all, delete, delete-orphan")
 
 
 

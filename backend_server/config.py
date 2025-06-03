@@ -8,6 +8,3 @@ JWT_SECRET_KEY = os.getenv("JWT_SECRETKEY")
 SECRET_KEY = os.getenv("SECRET_KEY")
 DB_CONNECTION = os.getenv("DB_CONNECTION")
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
-ORIGIN = "http://localhost:5000"
-
-

@@ -5,7 +5,6 @@ from flask.views import MethodView
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from passlib.hash import pbkdf2_sha256
-from db import db
 from src.models.users import UserModel
 from src.models.tokens import TokensModel
 from src.schemas.schema import AuthSchema
