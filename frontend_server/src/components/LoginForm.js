@@ -34,8 +34,6 @@ export default function LoginForm(){
 
             const data = res.data;
 
-            console.log(data);
-
             const userId = data.user_id;
             const username = data.username;
             const role = data.role;
@@ -46,7 +44,6 @@ export default function LoginForm(){
             window.localStorage.setItem('role', role);
             window.localStorage.setItem('accessToken', accessToken);
             window.localStorage.setItem('logged', true);
-
             
             navigate('/');
         }
@@ -55,7 +52,7 @@ export default function LoginForm(){
     return (<div class="login-container">
         <div class="login-card">
             <h2>Login</h2>
-            <GoogleOAuthProvider clientId="774680652106-b1ucoc7nv6tplkpn9gop6hhkk3nktlm3.apps.googleusercontent.com">
+            <GoogleOAuthProvider clientId={process.env.REACT_APP_CLIENT_ID}>
                     <SingleSignOnButton/>
                 </GoogleOAuthProvider>
                 <br></br>

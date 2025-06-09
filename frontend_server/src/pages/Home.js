@@ -9,11 +9,10 @@ export default function HomePage(){
 
     const navigate = useNavigate();
     const logged = window.localStorage.getItem('logged');
+    console.log(logged)
     const isLogged = logged === 'true' ? true : false;
 
-
     useAuthCheck();
-
 
     useEffect(() => {
         if (isLogged === false ) {

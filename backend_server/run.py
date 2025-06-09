@@ -14,16 +14,16 @@ from src.apis.login import bp as LoginBlueprint
 from src.apis.projects import bp as ProjectBlueprint
 from src.apis.google_auth import bp as SSOBlueprint
 from src.apis.tasks import bp as TaskBlueprint
+from config import SECRET_KEY, JWT_SECRET_KEY, DB_CONNECTION
 
 
 app = Flask("__name___")
 
-CORS(app, resources={r"/*":{"origins": "*"}})
-
+CORS(app, resources={r"/*":{"origins": "*"}}, supports_credentials=True)
 admin = Admin(app, url='/api/admin', name='My Admin Panel', template_mode='bootstrap4')
 
 # configs
-app.config["JWT_SECRET_KEY"] = "sumir#12345"
+app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
 app.config['JWT_ALGORITHM'] = 'HS256'
 app.config["PROPAGATE_EXCEPTIONS"] = True
 app.config["API_TITLE"] = "TASK TRACKER"
@@ -32,8 +32,8 @@ app.config["OPENAPI_VERSION"] ="3.0.3"
 app.config["OPENAPI_URL_PREFIX"] = "/"
 app.config["OPENAPI_SWAGGER_UI_PATH"] = "/swagger-ui"
 app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
-app.config["SECRET_KEY"] = "assdfga453@"
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"
+app.config["SECRET_KEY"] = SECRET_KEY
+app.config["SQLALCHEMY_DATABASE_URI"] = DB_CONNECTION
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)
 
 db.init_app(app)

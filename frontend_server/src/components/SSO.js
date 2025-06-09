@@ -1,11 +1,15 @@
 import { GoogleLogin } from '@react-oauth/google';
+import { BaseURL } from '../config';
+import { redirect, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 
 const SingleSignOnButton = () => {
+    const navigate = useNavigate();
     const responseMessage = (response) => {
         const googleToken = response.credential;
         // Send token to backend for validation
-        fetch('http://127.0.0.1:5000/google-auth', {
+        fetch( BaseURL + '/api/google-auth/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -14,9 +18,22 @@ const SingleSignOnButton = () => {
         })
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
+            if (data) {
                 // Handle JWT, login user
-                localStorage.setItem('jwt', data.token);
+                const userId = data.user_id;
+                const username = data.username;
+                const role = data.role;
+                const accessToken = data.access_token;
+            
+                window.localStorage.setItem('userId', userId);
+                window.localStorage.setItem('username', username);
+                window.localStorage.setItem('role', role);
+                window.localStorage.setItem('accessToken', accessToken);
+                window.localStorage.setItem('logged', true);
+
+                navigate('/');
+
+
             }
         });
     };

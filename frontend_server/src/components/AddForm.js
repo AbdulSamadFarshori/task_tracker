@@ -3,7 +3,8 @@ import './AddForm.css'
 import { addNewUser, getUserName } from '../userHttp';
 import { addNewProject, getAllProjectName } from '../projectHttp';
 import { addNewTask } from '../taskHttp';
-
+import InputField from './input';
+import DropDownBox from './DropDownInput';
 
 function ProjectAddForm(){
 
@@ -71,26 +72,36 @@ function ProjectAddForm(){
     return (<div class="create-project-container">
         <h2>Create New Project</h2>
         <form id="create-project-form">
-            <label for="project-name">Project Name</label>
-            <input type="text" id="project-name" onChange={nameChangeValue} required />
+            <InputField labelFor={"project-name"} 
+                        title={"Name"}
+                        type={"text"}
+                        idName = {"project-name"}
+                        onChange = {nameChangeValue} />
+
+            <InputField labelFor={"project-description"} 
+                        title={"Description"}
+                        type={"text"}
+                        idName = {"project-name"}
+                        onChange = {descChangeValue} />
             
-            <label for="project-description">Description</label>
-            <textarea id="project-description" onChange={descChangeValue} required></textarea>
             
-            <label for="project-start-date">Start Date</label>
-            <input type="date" id="project-start-date" onChange={startDateChangeValue} required />
-            
-            <label for="project-end-date">End Date</label>
-            <input type="date" id="project-end-date" onChange={endDateChangeValue} required />
-            
-            <label for="project-status">Status</label>
-            <select id="project-status" onChange={statusChangeValue} required>
-            <option value=""></option>
-                <option value="NEW">New</option>
-                <option value="IN_PROGRESS">In Progress</option>
-                <option value="COMPLETED">Completed</option>
-                <option value="NOT_STARTED">Not Started</option>
-            </select>
+            <InputField labelFor={"project-start-date"} 
+                        title={"Start Date"}
+                        type={"date"}
+                        idName = {"project-start-date"}
+                        onChange = {startDateChangeValue} />
+
+
+            <InputField labelFor={"project-end-date"} 
+                        title={"End Date"}
+                        type={"date"}
+                        idName = {"project-end-date"}
+                        onChange = {endDateChangeValue} />
+
+            <DropDownBox label={'Status'}
+                        id={"project-status"}
+                        options={['NEW', 'IN_PROGRESS', 'COMPLETED', 'NOT_STARTED']}
+                        onChange={statusChangeValue} />
 
             <label for="project-status">Owner</label>
             <select id="project-status" value={ownerState} onChange={ownerChangeValue} required>
@@ -169,14 +180,23 @@ function TaskAddForm(){
     return (<div class="create-project-container">
         <h2>Create New Task</h2>
         <form id="create-project-form">
-            <label for="project-name">Task Name</label>
-            <input type="text" id="project-name" onChange={onChangeTaskName} required />
+
+            <InputField labelFor={"project-name"}
+                        title={"Task Name"}
+                        type={"text"}
+                        idName={"project-name"}
+                        onChange={onChangeTaskName}
+                        />
             
             <label for="project-description">Description</label>
             <textarea id="project-description" onChange={onChangeDesc} required></textarea>
             
-            <label for="project-start-date">Due Date</label>
-            <input type="date" id="project-start-date" onChange={onChangeDueDate} required />
+            <InputField labelFor={"project-start-date"}
+                        title={"Due Date"}
+                        type={"Date"}
+                        idName={"project-start-date"}
+                        onChange={onChangeDueDate}
+                        />
             
             <label for="project-status">Owner</label>
             <select id="project-status" value={taskownerState} onChange={onChangeOwner} required>

@@ -68,6 +68,12 @@ class TokensSchema(Schema):
 class AuthSchema(Schema):
     token = fields.Str(required=True)
 
+class AuthResponseSchema(Schema):
+    username =  fields.Str() 
+    user_id =  fields.Int() 
+    role = fields.Enum(UserRole)
+    access_token =  fields.Str()
+
 
 class ProjectStatus(Enum):
     NEW = "NEW"

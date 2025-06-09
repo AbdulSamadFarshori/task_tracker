@@ -18,6 +18,7 @@ export async function getUserDetails(accessToken){
 
 export async function getUserName(accessToken){
     const res = await GetRequest(UserNameURL, accessToken);
+    console.log(res)
     return res
 }
 

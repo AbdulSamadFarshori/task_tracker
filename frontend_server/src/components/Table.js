@@ -9,6 +9,8 @@ import SearchBar from "./searchBar";
 
 export default function TableComponent({user, project, task, col, data}){
 
+    const role = window.localStorage.getItem('role');
+
     let rowData = null;
     let title = null;
     let addButton = null;
@@ -31,11 +33,12 @@ export default function TableComponent({user, project, task, col, data}){
         title = "Task Details"
         rowData = data.map((item, index)=>(<TaskRowComponent {...item}/>));
         addButton = <SearchBar project={false} task={true} user={false}/>;
+
     }
     
     return (<div class="users-container">
         <h2>{title}</h2>
-        {addButton}
+        {role === "ADMIN" ? addButton : ""}
         <table class="users-table">
             <thead>
                 <tr>
