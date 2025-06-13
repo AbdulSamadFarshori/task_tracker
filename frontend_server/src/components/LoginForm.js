@@ -4,6 +4,8 @@ import { checkUserCerdentials } from '../userHttp'
 import { useNavigate } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import SingleSignOnButton from "./SSO";
+import InputField from './Input';
+import Button from './Button';
 
 
 
@@ -12,9 +14,10 @@ export default function LoginForm(){
     const navigate = useNavigate();
 
 
-    const [userState, setUserState] = useState('')
-    const [passwordState, setPasswordState] = useState('')
-    
+    const [userState, setUserState] = useState('');
+    const [passwordState, setPasswordState] = useState('');
+    const [notificationState, setNotificationState] = useState(<p></p>);
+
     const handleUserChange = (e) => {
         setUserState(e.target.value)
     };
@@ -30,7 +33,15 @@ export default function LoginForm(){
         }
         const res = await checkUserCerdentials(data);
 
-        if (res.status === 'success'){
+        console.log(res)
+
+        function onCloseNotify(){
+            const notification = <></>;
+            setNotificationState(notification)
+
+        }
+
+        if (res.status === 'success' && res.data.status === 'ok'){
 
             const data = res.data;
 
@@ -47,26 +58,29 @@ export default function LoginForm(){
             
             navigate('/');
         }
+        if (res.data.status === "error"){
+            const notification = <div id="login-notfy-error" className="login-notfy-error"> {res.data.msg} <span class="login-notfy-close" onClick={onCloseNotify}>&times;</span></div>;
+            setNotificationState(notification)
+
+        }
     };
 
     return (<div class="login-container">
+        
         <div class="login-card">
             <h2>Login</h2>
+            <div>{notificationState}</div>
             <GoogleOAuthProvider clientId={process.env.REACT_APP_CLIENT_ID}>
                     <SingleSignOnButton/>
                 </GoogleOAuthProvider>
                 <br></br>
                 <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" value={userState} onChange={handleUserChange} required />
+                    <InputField labelFor={"username"} title={"Username"} type={"text"} idName={"username"} name={"username"} onChange={handleUserChange} />                  
                 </div>
-
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" value={passwordState} onChange={handlePasswordChange} required />
+                <InputField labelFor={"password"} title={"Password"} type={"password"} idName={"password"} name={"password"} onChange={handlePasswordChange}/>
                 </div>
-
-                <button class="login-btn" onClick={handleSubmit}>Login</button>
+                <Button className={"login-btn"} onClick={handleSubmit} name={"Login"} />
                 
                 
         </div>

@@ -3,6 +3,11 @@ import './AddForm.css'
 import { editUserDetails, getUserName } from '../userHttp';
 import { getAllProjectDetails, getAllProjectName, updateProjectDetails } from '../projectHttp';
 import { updateTaskDetails } from '../taskHttp';
+import InputField from './Input';
+import TextArea from './TextArea';
+import DropDownBox from './DropDownInput';
+import Button from './Button';
+
 
 
 function ProjectEditForm({id, name, description, startDate, endDate, status, owner}){
@@ -76,42 +81,20 @@ function ProjectEditForm({id, name, description, startDate, endDate, status, own
         console.log(payload);
 
         const res = await updateProjectDetails(payload, accessToken)
-        console.log();
+        window.location.reload()
 
     }
 
     return <div class="create-project-container">
                     <h2>Edit Project</h2>
             <form id="create-project-form">
-                <label for="project-name">Project Name</label>
-                <input type="text" id="project-name" value={nameEditState} onChange={nameChangeValue} />
-                
-                <label for="project-description">Description</label>
-                <textarea id="project-description" value={descEditState} onChange={descChangeValue}></textarea>
-                
-                <label for="project-start-date">Start Date</label>
-                <input type="date" id="project-start-date" value={startDateEditState} onChange={startDateChangeValue}/>
-                
-                <label for="project-end-date">End Date</label>
-                <input type="date" id="project-end-date" value={endDateEditState} onChange={endDateChangeValue}/>
-                
-                <label for="project-status">Status</label>
-                <select id="project-status" value={statusEditState} onChange={statusChangeValue}>
-                    <option value="NEW">New</option>
-                    <option value="IN_PROGRESS">In Progress</option>
-                    <option value="COMPLETED">Completed</option>
-                    <option value="NOT_STARTED">Not Started</option>
-                </select>
-
-                <label for="project-status">Owner</label>
-                <select id="project-status" value={ownerEditState} onChange={ownerChangeValue}>
-
-                    {userNameListState.map((data)=>(
-                        <option value={data.username}>{data.username}</option>
-                        ))}
-                </select>
-
-                <button type="submit" onClick={onSubmitEditForm}>Save</button>
+                <InputField labelFor={"project-name"} title={"Project Name"} type={"text"} idName={"project-name"} value={nameEditState} onChange={nameChangeValue}/>
+                <TextArea labelFor={"project-description"} title={"Description"} idName={"project-description"} value={descEditState} onChange={descChangeValue}/>
+                <InputField labelFor={"project-start-date"} title={"Start Date"} type={"date"} idName={"project-start-date"} value={startDateEditState} onChange={startDateChangeValue}/>
+                <InputField labelFor={"project-end-date"} title={"End Date"} type={"date"} idName={"project-end-date"} value={endDateEditState} onChange={endDateChangeValue}/>
+                <DropDownBox label={"Status"} id={"project-status"} options={["NEW", "IN_PROGRESS", "COMPLETED", "NOT_STARTED"]} onChange={statusChangeValue} value={statusEditState} status={true} />
+                <DropDownBox label={"Owner"} id={"project-status"} value={ownerEditState} options={userNameListState} onChange={ownerChangeValue} owner={true}/>
+                <Button type={"button"} onClick={onSubmitEditForm} name={"Save"}/>
             </form>
         </div>
 
@@ -133,7 +116,6 @@ function StaffTaskEditForm({id, status}){
 
     async function onSubmitTaskEditFrom(){
 
-        console.log(idState);
 
         const payload = {
             id : idState,
@@ -141,27 +123,21 @@ function StaffTaskEditForm({id, status}){
         }
         const accessToken = window.localStorage.getItem('accessToken');
         const res = await updateTaskDetails(payload, accessToken);
+        window.location.reload()
+
     }
 
     return <div class="create-project-container">
     <h2>Edit Task</h2>
     <form id="create-project-form">
-        
-        <label for="project-status">Status</label>
-        <select id="project-status" value={statusState} onChange={onStatusChange} required>
-            <option value=""></option>
-            <option value="IN_PROGRESS">In Progress</option>
-            <option value="COMPLETED">Completed</option>
-        </select>
-
-        <button type="submit" onClick={onSubmitTaskEditFrom}>Save</button>
+        <DropDownBox label={"Status"} idName={"project-status"} options={["IN_PROGRESS","COMPLETED"]} value={statusState} onChange={onStatusChange}/>
+        <Button type={"button"} onClick={onSubmitTaskEditFrom} name={"Save"}/>
         </form>
         </div>
 
     }
 
 function TaskEditForm({id, name, description, dueDate, owner, status, projectName}){
-    console.log(id);
 
     const [userNameListState, setUserNameListState] = useState([]);
     const [projectListState, setProjectListState] = useState([])
@@ -208,8 +184,6 @@ function TaskEditForm({id, name, description, dueDate, owner, status, projectNam
         setStatusState(e.target.value);
     }
     const onOwnerChange = (e)=>{
-        console.log(e.target.value);
-
         setOwnerState(e.target.value);
     }
 
@@ -240,39 +214,13 @@ function TaskEditForm({id, name, description, dueDate, owner, status, projectNam
     return <div class="create-project-container">
                 <h2>Edit Task</h2>
                 <form id="create-project-form">
-                    <label for="project-name">Task Name</label>
-                    <input type="text" id="project-name" value={nameState} onChange={onNameChange} required />
-                    
-                    <label for="project-description">Description</label>
-                    <textarea id="project-description" value={descState} onChange={onDescChange} required></textarea>
-                    
-                    <label for="project-start-date">Due Date</label>
-                    <input type="date" id="project-start-date" value={dueDateState} onChange={onDueDateChange} required />
-                    
-                    <label for="project-status">Owner</label>
-                    <select id="project-status" value={ownerState} onChange={onOwnerChange}>
-                    <option value=""> </option>
-                    {userNameListState.map((data)=>(
-                        <option value={data.username}>{data.username}</option>
-                        ))}
-                </select>
-
-                    <label for="project-status">Status</label>
-                    <select id="project-status" value={statusState} onChange={onStatusChange} required>
-                        <option value=""></option>
-                        <option value="IN_PROGRESS">In Progress</option>
-                        <option value="COMPLETED">Completed</option>
-                    </select>
-
-                    <label for="project-status">Project</label>
-                    <select id="project-status" value={projectNameState} onChange={onChangeProjectName} required>
-                        <option value=""> </option>
-                        {projectListState.map((data)=>(
-                            <option value={data.project_name}>{data.project_name}</option>
-                        ))}
-                    </select>
-
-                    <button type="submit" onClick={onSubmitTaskEditFrom}>Save</button>
+                    <InputField labelFor={"project-name"} title={"Task Name"} type={"text"} idName={"project-name"} value={nameState} onChange={onNameChange}/>
+                    <TextArea labelFor={"project-description"} title={"Description"} idName={"project-description"} value={descState} onChange={onDescChange}/>
+                    <InputField labelFor={"project-start-date"} title={"Due Date"} type={"date"} idName={"project-start-date"} value={dueDateState} onChange={onDueDateChange}/>
+                    <DropDownBox label={"Owner"} idName={"project-status"} options={userNameListState} value={ownerState} onChange={onDescChange} owner={true}/>
+                    <DropDownBox label={"Status"} idName={"project-status"} options={["IN_PROGRESS", "COMPLETED"]} value={statusState} onChange={onStatusChange} status={true}/>
+                    <DropDownBox label={"Project"} idName={"project-status"} options={projectListState} value={projectNameState} onChange={onChangeProjectName} project={true}/>
+                    <Button type={"button"} onClick={onSubmitTaskEditFrom} name={"Save"}/>
             </form>
         </div>
 
@@ -325,21 +273,11 @@ function TaskEditForm({id, name, description, dueDate, owner, status, projectNam
         return <div class="create-project-container">
         <h2>Edit User</h2>
         <form id="create-project-form">
-            <label for="project-name">Username</label>
-            <input type="text" id="project-name" value={userNameEditState} onChange={usenameOnChange} />
-
-            <label for="project-name">Email</label>
-            <input type="text" id="project-name" value={emailEditState} onChange={emailOnChange} />
-
-            <label for="project-name">Password</label>
-            <input type="password" id="project-name" onChange={passwordOnChange} />
-
-            <label for="project-status">Role</label>
-            <select id="project-status" value={roleEditState} onChange={roleOnChange}>
-                <option value="ADMIN">Admin</option>
-                <option value="STAFF">Staff</option>
-            </select>
-            <button type="submit" onClick={onSubmitForm}>Save</button>
+            <InputField labelFor={"project-name"} title={"Username"} type={"text"} idName={"project-name"} value={userNameEditState} onChange={usenameOnChange} />
+            <InputField labelFor={"project-name"} title={"Email"} type={"text"} idName={"project-name"} value={emailEditState} onChange={emailOnChange} />
+            <InputField labelFor={"project-name"} title={"Password"} type={"text"} idName={"project-name"} value={""} onChange={passwordOnChange} />
+            <DropDownBox label={"Role"} idName={"project-status"} options={["ADMIN", "STAFF"]} value={roleEditState} onChange={roleOnChange}status={true} />
+            <Button type={"button"} onClick={onSubmitForm} name={"Save"} />
         </form>
         </div>
 
@@ -348,33 +286,10 @@ function TaskEditForm({id, name, description, dueDate, owner, status, projectNam
 export default function EditForm({id, staff, project, user, task, name, description, startDate, endDate, owner, dueDate, 
                                     status, projectName, userName, email, role}){
 
-    const staffTaskEditForm = <StaffTaskEditForm
-                                id={id}
-                                status={status} />;
-    
-    const projectEditForm = <ProjectEditForm
-                                id = {id}
-                                name={name} 
-                                description={description} 
-                                startDate={startDate} 
-                                endDate={endDate} 
-                                status={status} 
-                                owner={owner} />;
-
-    const taskEditForm = <TaskEditForm
-                            id={id}
-                            name={name} 
-                            description={description} 
-                            dueDate={dueDate} 
-                            owner={owner} 
-                            status={status} 
-                            projectName={projectName} />;
-
-    const userEditForm = <UserEditForm
-                            id = {id}
-                            userName={userName} 
-                            email={email}
-                            role={role} />;
+    const staffTaskEditForm = <StaffTaskEditForm id={id} status={status}/>;
+    const projectEditForm = <ProjectEditForm id={id} name={name} description={description} startDate={startDate} endDate={endDate} status={status} owner={owner} />;
+    const taskEditForm = <TaskEditForm id={id} name={name} description={description} dueDate={dueDate}  owner={owner} status={status} projectName={projectName} />;
+    const userEditForm = <UserEditForm id={id} userName={userName} email={email} role={role} />;
 
 let AddForm = <p></p>;
 

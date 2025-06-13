@@ -18,12 +18,12 @@ class LoginViewApi(MethodView):
     @bp.arguments(LoginSchema)
     @bp.response(200, LoginOutputSchema(many=False))
     def post(self, reqs):
+        print(reqs)
         try:
             username = reqs["username"]
             password = reqs["password"]
             data = UserModel.query.filter(UserModel.username == username).first()
-
-            if data.username == username and pbkdf2_sha256.verify(password, data.password):
+            if data and  pbkdf2_sha256.verify(password, data.password):
                 access_token = create_access_token(identity=data.username)
                 refresh_token = create_refresh_token(identity=data.username)
                 check_record = TokensModel.query.filter(TokensModel.user_id == data.id).first()
@@ -36,16 +36,18 @@ class LoginViewApi(MethodView):
                     check_record.refresh_token = refresh_token
                     check_record.save()
                     result = {
+                        "status": "ok",
                         "username": data.username, 
                         "user_id": data.id, 
                         "role": data.role,
                         "access_token": access_token
                         }
                 return result, 200 
-            return abort(409, message="username or password invalid.")
+            return jsonify({"status": "error", "msg":"username or password invalid"}), 200
         except Exception as e:
             logger.error(e)
-            return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
+            print(e)
+            return jsonify({"status":"error", "msg": f"An unexpected error occurred: {str(e)}"}), 500
         
 class TokenVerifyAPIView(MethodView):
 
@@ -60,8 +62,6 @@ class TokenVerifyAPIView(MethodView):
             return jsonify({"token_valid" : True}), 200
         except JWTDecodeError:
             return jsonify({"token_valid" : False}), 200
-        
-
 
 login_view = LoginViewApi.as_view('login')
 token_verify_view = TokenVerifyAPIView.as_view('token_verification')

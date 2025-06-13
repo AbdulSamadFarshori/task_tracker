@@ -4,6 +4,7 @@ from flask_smorest import Blueprint, abort
 from flask.views import MethodView
 from logger import logger 
 from src.models.users import UserModel
+from src.utils.helper import permission
 from src.schemas.schema import GetUserSchema, PostUserSchema, UpdateUserSchema, UserNameSchema
 from marshmallow import ValidationError
 
@@ -14,6 +15,7 @@ bp = Blueprint('user', __name__, url_prefix='/api/users', description="users rel
 class UsersCRUDApiViews(MethodView):
 
     @jwt_required()
+    @permission()
     def get(self, user_id=None):
         try:
             if user_id:
@@ -24,26 +26,27 @@ class UsersCRUDApiViews(MethodView):
                 return GetUserSchema(many=True).dump(users), 200
         except Exception as e:
             logger.error(e)
-            return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
+            return jsonify({"status":"error", "msg": f"An unexpected error occurred: {str(e)}"}), 500
     
+    @jwt_required()
+    @permission()
     @bp.arguments(PostUserSchema)
     @bp.response(200, GetUserSchema)
-    @jwt_required()
     def post(self, userSchema):
-        print(userSchema)
         try:
             userSchema["password"] = pbkdf2_sha256.hash(userSchema["password"])
             data = UserModel(**userSchema)
             data.save()
-            return data, 201
+            return jsonify({"status": "ok", "msg": "user has been successfully added"}), 201
         except ValidationError as e:
-            return jsonify({"errors": e.errors()}), 400
+            return jsonify({"status":"error", "msg":e.errors()}), 400
         except Exception as e:
             logger.error(e)
-            return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
+            return jsonify({"status":"error", "msg": f"An unexpected error occurred: {str(e)}"}), 500
 
     @jwt_required()
-    @bp.arguments(UpdateUserSchema) 
+    @permission() 
+    @bp.arguments(UpdateUserSchema)
     def put(self, reqs):
         print(reqs)
         if reqs:
@@ -57,34 +60,37 @@ class UsersCRUDApiViews(MethodView):
                     data.password = hash_password if hash_password is not None and hash_password != data.password  else data.password
                     data.role = reqs['role'] if reqs['role'] != data.role else data.role
                     data.save()
-                    return jsonify({"data":reqs}), 201 
+                    return jsonify({"status": "ok", "msg": "user has been successfully edited"}), 201 
                 except ValidationError as e:
-                    return jsonify({"errors": e.errors()}), 400
+                    return jsonify({"status":"error", "msg":e.errors()}), 400
                 except Exception as e:
                     logger.error(e)
-                    return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
+                    return jsonify({"status":"error", "msg" : f"An unexpected error occurred: {str(e)}"}), 500
             else:
-                return jsonify({"error": f"this {user_id} does not exist"}), 404
+                return jsonify({"status":"error", "msg": f"this {user_id} does not exist"}), 404
         else:
-            return jsonify({"error": f"user data is missing"}), 404
+            return jsonify({"status":"error", "msg":"user data is missing"}), 404
 
     @jwt_required()
+    @permission()
     def delete(self, user_id : int):
         try:
             data = UserModel.query.filter(UserModel.id==user_id).first()
             if not data:
-                return jsonify({'error': 'user is not present in database'}), 404
+                return jsonify({"status":"error", "msg": "user is not present in database"}), 404
             else:
+                name = data.username
                 data.delete()
-                return jsonify({'error': 'user has been removed from database'}), 201
+                return jsonify({"status":"error", "msg": f"user {name} has been removed from database"}), 201
         except Exception as e:
             logger.error(e)
-            return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
+            return jsonify({"status":"error", "msg": f"An unexpected error occurred: {str(e)}"}), 500
         
 
 class GetUserNameAPIView(MethodView):
 
     @jwt_required()
+    @permission()
     def get(self):
         try:
             data = UserModel.query.all()
@@ -93,7 +99,7 @@ class GetUserNameAPIView(MethodView):
             return result, 200
         except Exception as e:
             logger.error(e)
-            return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
+            return jsonify({"status":"error", "msg": f"An unexpected error occurred: {str(e)}"}), 500
 
 user_view = UsersCRUDApiViews.as_view("user")
 

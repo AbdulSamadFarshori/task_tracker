@@ -55,6 +55,7 @@ class LoginSchema(Schema):
     password = fields.Str(required=True, load_only=True)
 
 class LoginOutputSchema(Schema):
+    status = fields.Str()
     username =  fields.Str() 
     user_id =  fields.Int() 
     role = fields.Enum(UserRole)
@@ -73,7 +74,6 @@ class AuthResponseSchema(Schema):
     user_id =  fields.Int() 
     role = fields.Enum(UserRole)
     access_token =  fields.Str()
-
 
 class ProjectStatus(Enum):
     NEW = "NEW"
@@ -133,9 +133,7 @@ class PostTaskSchema(Schema):
     status = fields.Enum(TaskStatus)
     user = fields.Str()
     project = fields.Str()
-    # users = fields.Nested(GetUserSchema, many=False)
-    # projects =  fields.Nested(GetProjectSchema, many=False) 
-
+    
 class UpdateTaskSchema(Schema):
     id = fields.Int() 
     name = fields.Str()

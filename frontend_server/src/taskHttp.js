@@ -11,7 +11,7 @@ export async function getAllTaskDetails(accessToken){
 
 export async function addNewTask(payload, accessToken){
     const res = await PostRequest(TaskURL, payload, accessToken);
-    return res
+    return res.data
 }
 
 export async function getTaskDetailsById(id, accessToken){

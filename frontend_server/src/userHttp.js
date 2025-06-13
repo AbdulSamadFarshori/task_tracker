@@ -31,7 +31,7 @@ export async function getUserByIdDetails(accessToken, id){
 
 export async function addNewUser(payload, accessToken){
     const res = await PostRequest(UserURL, payload, accessToken);
-    return res
+    return res.data
     
 }
 

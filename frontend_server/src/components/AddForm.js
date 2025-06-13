@@ -3,8 +3,10 @@ import './AddForm.css'
 import { addNewUser, getUserName } from '../userHttp';
 import { addNewProject, getAllProjectName } from '../projectHttp';
 import { addNewTask } from '../taskHttp';
-import InputField from './input';
+import InputField from './Input';
 import DropDownBox from './DropDownInput';
+import TextArea from './TextArea';
+import Button from './Button';
 
 function ProjectAddForm(){
 
@@ -25,6 +27,8 @@ function ProjectAddForm(){
     const [endDateState, setEndDateState] = useState("");
     const [statusState, setStatusState] = useState("");
     const [ownerState, setOwnerState] = useState("");
+    const [notificationState, setNotificationState] = useState(<p></p>); 
+
 
 
     const nameChangeValue = (e)=>{
@@ -47,7 +51,6 @@ function ProjectAddForm(){
         setStatusState(e.target.value);
     }
     const ownerChangeValue = (e)=>{
-        console.log(e.target.value)
         setOwnerState(e.target.value);
     }
 
@@ -62,56 +65,46 @@ function ProjectAddForm(){
 
         }
 
-        console.log(payload)
-
         const accessToken = window.localStorage.getItem('accessToken');
         const res = await addNewProject(payload, accessToken);
+
+        function onCloseNotify(){
+            const notification = <></>;
+            setNotificationState(notification)
+
+        }
+
+        if (res.status === "ok"){
+
+            setNameState('');
+            setDescState('');
+            setStartDateState('');
+            setEndDateState('');
+            setStatusState('');
+            setOwnerState('');
+
+            const notification = <div id="notfy-success" className="notfy-success"> {res.msg} <span class="notfy-close" onClick={onCloseNotify}>&times;</span></div>;
+            setNotificationState(notification)
+
+        }
+        else{
+            const notification = <div id="notfy-error" className="notfy-error"> {res.msg} <span class="notfy-close" onClick={onCloseNotify}>&times;</span></div>;
+            setNotificationState(notification)
+        }
+
     }
     
-
-    return (<div class="create-project-container">
+    return (<div className="create-project-container">
         <h2>Create New Project</h2>
+        {notificationState}
         <form id="create-project-form">
-            <InputField labelFor={"project-name"} 
-                        title={"Name"}
-                        type={"text"}
-                        idName = {"project-name"}
-                        onChange = {nameChangeValue} />
-
-            <InputField labelFor={"project-description"} 
-                        title={"Description"}
-                        type={"text"}
-                        idName = {"project-name"}
-                        onChange = {descChangeValue} />
-            
-            
-            <InputField labelFor={"project-start-date"} 
-                        title={"Start Date"}
-                        type={"date"}
-                        idName = {"project-start-date"}
-                        onChange = {startDateChangeValue} />
-
-
-            <InputField labelFor={"project-end-date"} 
-                        title={"End Date"}
-                        type={"date"}
-                        idName = {"project-end-date"}
-                        onChange = {endDateChangeValue} />
-
-            <DropDownBox label={'Status'}
-                        id={"project-status"}
-                        options={['NEW', 'IN_PROGRESS', 'COMPLETED', 'NOT_STARTED']}
-                        onChange={statusChangeValue} />
-
-            <label for="project-status">Owner</label>
-            <select id="project-status" value={ownerState} onChange={ownerChangeValue} required>
-                <option value=""> </option>
-                {userListState.map((data)=>(
-                    <option value={data.username}>{data.username}</option>
-                ))}
-            </select>
-
-            <button type="submit" onClick={onSubmitNewProject}>Create Project</button>
+            <InputField labelFor={"project-name"} title={"Name"} type={"text"} idName = {"project-name"} onChange = {nameChangeValue} value={nameState} />
+            <TextArea labelFor={"project-description"} title={"Description"} idName={"project-description"} onchange={descChangeValue}  value={descState}/>
+            <InputField labelFor={"project-start-date"} title={"Start Date"} type={"date"} idName = {"project-start-date"} onChange = {startDateChangeValue} value={startDateState}/>
+            <InputField labelFor={"project-end-date"} title={"End Date"} type={"date"} idName = {"project-end-date"} onChange = {endDateChangeValue} value={endDateState}/>
+            <DropDownBox label={"Status"} id={"project-status"} options={["NEW", "IN_PROGRESS", "COMPLETED", "NOT_STARTED"]} onChange={statusChangeValue} value={statusState} status={true} />
+            <DropDownBox label={"Owner"} id={"project-status"} value={ownerState} options={userListState} onChange={ownerChangeValue} owner={true}/>
+            <Button type={"button"} onClick={onSubmitNewProject} name={"Create Project"}/>
         </form>
     </div>);
     }
@@ -138,6 +131,7 @@ function TaskAddForm(){
     const [taskStatusState, setTaskStatusState] = useState('');
     const [taskownerState, setTaskownerState] = useState('');
     const [taskProjectNameState, setTaskProjectNameState] = useState('');
+    const [notificationState, setNotificationState] = useState(<p></p>); 
 
 
     const onChangeTaskName = (e)=>{
@@ -172,65 +166,56 @@ function TaskAddForm(){
             project : taskProjectNameState
         }
     
-    console.log(payload)
-    const res = await addNewTask(payload, accessToken);
+        const res = await addNewTask(payload, accessToken);
+
+        function onCloseNotify(){
+            const notification = <></>;
+            setNotificationState(notification)
+
+        }
+
+        if (res.status === "ok"){
+
+            setTaskNameState('');
+            setTaskDescState('');
+            setdueDateState('');
+            setTaskStatusState('');
+            setTaskownerState('');
+            setTaskProjectNameState('');
+
+            const notification = <div id="notfy-success" className="notfy-success"> {res.msg} <span class="notfy-close" onClick={onCloseNotify}>&times;</span></div>;
+            setNotificationState(notification)
+
+        }
+        else{
+            const notification = <div id="notfy-error" className="notfy-error"> {res.msg} <span class="notfy-close" onClick={onCloseNotify}>&times;</span></div>;
+            setNotificationState(notification)
+        }
 
     }
 
     return (<div class="create-project-container">
         <h2>Create New Task</h2>
+        {notificationState}
         <form id="create-project-form">
-
-            <InputField labelFor={"project-name"}
-                        title={"Task Name"}
-                        type={"text"}
-                        idName={"project-name"}
-                        onChange={onChangeTaskName}
-                        />
-            
-            <label for="project-description">Description</label>
-            <textarea id="project-description" onChange={onChangeDesc} required></textarea>
-            
-            <InputField labelFor={"project-start-date"}
-                        title={"Due Date"}
-                        type={"Date"}
-                        idName={"project-start-date"}
-                        onChange={onChangeDueDate}
-                        />
-            
-            <label for="project-status">Owner</label>
-            <select id="project-status" value={taskownerState} onChange={onChangeOwner} required>
-                <option value=""> </option>
-                {userListState.map((data)=>(
-                    <option value={data.username}>{data.username}</option>
-                ))}
-            </select>
-            
-            <label for="project-status">Status</label>
-            <select id="project-status" onChange={onChangeStatus} required>
-                <option value=""></option>
-                <option value="IN_PROGRESS">In Progress</option>
-                <option value="COMPLETED">Completed</option>
-            </select>
-
-            <label for="project-status">Project</label>
-            <select id="project-status" value={taskProjectNameState} onChange={onChangeProjectName} required>
-                <option value=""> </option>
-                {projectListState.map((data)=>(
-                    <option value={data.project_name}>{data.project_name}</option>
-                ))}
-            </select>
-
-            <button type="submit" onClick={onSubmitTaskForm}>Create Task</button>
+            <InputField labelFor={"project-name"} title={"Task Name"} type={"text"} idName={"project-name"} onChange={onChangeTaskName} value={taskNameState} />
+            <TextArea labelFor={"project-description"} title={"Description"} idName={"project-description"} onchange={onChangeDesc} value={taskDescState}/>
+            <InputField labelFor={"project-start-date"} title={"Due Date"} type={"Date"} idName={"project-start-date"} onChange={onChangeDueDate} value={dueDateState}/>
+            <DropDownBox label={"Owner"} idName={"project-status"} options={userListState} onChange={onChangeOwner} value={taskownerState} owner={true} />
+            <DropDownBox label={"Status"} idName={"project-status"} options={["IN_PROGRESS", "COMPLETED"]} onChange={onChangeStatus} value={taskStatusState} status={true}/>
+            <DropDownBox label={"Project"} idName={"project-status"} options={projectListState} onChange={onChangeProjectName} value={taskProjectNameState} project={true} />
+            <Button type={"button"} onClick={onSubmitTaskForm} name={"Create Task"}/>
     </form>
     </div>);
     }
 
 function UserAddForm(){
+
     const [userNameState, setUserNameState] = useState('');
     const [emailState, setEmailState] = useState('');
     const [passwordState, setPasswordState] = useState('');
     const [roleState, setRoleState] = useState('');
+    const [notificationState, setNotificationState] = useState(<p></p>);
 
     const usernameChangeValue = (e) => {
         setUserNameState(e.target.value)
@@ -259,30 +244,42 @@ function UserAddForm(){
 
         const accessToken = window.localStorage.getItem('accessToken');
         const res = await addNewUser(payload, accessToken);
+        
+        
+        function onCloseNotify(){
+            const notification = <></>;
+            setNotificationState(notification)
 
+        }
+
+        if (res.status === "ok"){
+
+            setUserNameState('');
+            setEmailState('');
+            setPasswordState('');
+            setRoleState('');
+            
+            const notification = <div id="notfy-success" className="notfy-success"> {res.msg} <span class="notfy-close" onClick={onCloseNotify}>&times;</span></div>;
+            setNotificationState(notification)
+
+        }
+        else{
+            const notification = <div id="notfy-error" className="notfy-error"> {res.msg} <span class="notfy-close" onClick={onCloseNotify}>&times;</span></div>;
+            setNotificationState(notification)
+        }
 
     } 
 
     return (<div class="create-project-container">
         <br></br>
         <h2>Create New User</h2>
+        {notificationState}
         <form id="create-project-form">
-            <label for="project-name">Username</label>
-            <input type="text" id="project-name" onChange={usernameChangeValue} required />
-
-            <label for="project-name">Email</label>
-            <input type="text" id="project-name" onChange={emailChangeValue} required />
-
-            <label for="project-name">Password</label>
-            <input type="password" id="project-name" onChange={passwordChangeValue} required />
-
-            <label for="project-status">Role</label>
-            <select id="project-status" onChange={roleChangeValue} required>
-                <option value=""></option>
-                <option value="ADMIN">Admin</option>
-                <option value="STAFF">Staff</option>
-            </select>
-            <button type="submit" onClick={onSubmitForm}>Create User</button>
+            <InputField labelFor={"project-name"} title={"Username"} type={"text"} idName={"project-name"} value={userNameState} onChange={usernameChangeValue} />
+            <InputField labelFor={"project-name"} title={"Email"} type={"text"} idName={"project-name"} value={emailState} onChange={emailChangeValue} />
+            <InputField labelFor={"project-name"} title={"Password"} type={"password"} idName={"project-name"} value={passwordState} onChange={passwordChangeValue} />
+            <DropDownBox label={"Role"} idName={"project-status"} options={["ADMIN", "STAFF"]} value={roleState} onChange={roleChangeValue} status={true}/>
+            <Button type={"button"} onClick={onSubmitForm} name={"Create User"}/>
         </form>
         </div>);
     }

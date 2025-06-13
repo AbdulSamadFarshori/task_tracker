@@ -17,7 +17,7 @@ export async function PostRequest(url, payload, accessToken){
         });
         const resData = await response.json();
         if  (!response.ok){
-            return {status:'fail', data: []}
+            return {status:'fail', data: resData}
         }
         else{
             return {status:'success', data: resData}

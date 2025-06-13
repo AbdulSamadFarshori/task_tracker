@@ -44,7 +44,7 @@ class TaskAPIView(MethodView):
             return jsonify({"status":"ok", "msg": "successfully added the task"}), 200
         except Exception as e:
             logger.error(e)
-            return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
+            return jsonify({"status":"error",  "msg":f"An unexpected error occurred: {str(e)}"}), 500
         
     
     @jwt_required()
@@ -78,21 +78,22 @@ class TaskAPIView(MethodView):
                 return abort(404, message="Task is not available in the database.")
         except Exception as e:
             logger.error(e)
-            return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
+            return jsonify({"status":"error", "msg": f"An unexpected error occurred: {str(e)}"}), 500
         
     @jwt_required()
     def delete(self, task_id):
         try:
             data = TaskModel.query.filter(TaskModel.id == task_id).first()
             if data:
+                name = data.name
                 data.delete()
-                return jsonify({"status":"ok", "msg": "successfully deleted the task"}), 200
+                return jsonify({"status":"ok", "msg": f"successfully deleted the task {name}"}), 200
             else:
                 return abort(404, message="Task is not available in the database.")
         
         except Exception as e:
             logger.error(e)
-            return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
+            return jsonify({"status":"error", "msg":f"An unexpected error occurred: {str(e)}"}), 500
         
     
 class StaffTaskAPIView(MethodView):
@@ -108,7 +109,7 @@ class StaffTaskAPIView(MethodView):
         
         except Exception as e:
             logger.error(e)
-            return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
+            return jsonify({"status": "error", "msg": f"An unexpected error occurred: {str(e)}"}), 500
         
     @jwt_required()
     @bp.arguments(UpdateTaskStatusSchema)
@@ -124,7 +125,7 @@ class StaffTaskAPIView(MethodView):
                 return abort(404, message="Task is not available in the database.")
         except Exception as e:
             logger.error(e)
-            return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
+            return jsonify({"status": "error", "msg": f"An unexpected error occurred: {str(e)}"}), 500
         
 class ProjectTaskAPIView(MethodView):
     

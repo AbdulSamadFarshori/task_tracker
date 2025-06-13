@@ -12,7 +12,7 @@ export async function getAllProjectDetails(accessToken){
 
 export async function addNewProject(payload, accessToken){
     const res = await PostRequest(projectURL, payload, accessToken);
-    return res
+    return res.data
 }
 
 export async function getProjectDetailsById(accessToken, id){
