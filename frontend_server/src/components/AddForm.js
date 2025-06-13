@@ -99,7 +99,7 @@ function ProjectAddForm(){
         {notificationState}
         <form id="create-project-form">
             <InputField labelFor={"project-name"} title={"Name"} type={"text"} idName = {"project-name"} onChange = {nameChangeValue} value={nameState} />
-            <TextArea labelFor={"project-description"} title={"Description"} idName={"project-description"} onchange={descChangeValue}  value={descState}/>
+            <TextArea labelFor={"project-description"} title={"Description"} idName={"project-description"} onChange={descChangeValue}  value={descState}/>
             <InputField labelFor={"project-start-date"} title={"Start Date"} type={"date"} idName = {"project-start-date"} onChange = {startDateChangeValue} value={startDateState}/>
             <InputField labelFor={"project-end-date"} title={"End Date"} type={"date"} idName = {"project-end-date"} onChange = {endDateChangeValue} value={endDateState}/>
             <DropDownBox label={"Status"} id={"project-status"} options={["NEW", "IN_PROGRESS", "COMPLETED", "NOT_STARTED"]} onChange={statusChangeValue} value={statusState} status={true} />
@@ -199,7 +199,7 @@ function TaskAddForm(){
         {notificationState}
         <form id="create-project-form">
             <InputField labelFor={"project-name"} title={"Task Name"} type={"text"} idName={"project-name"} onChange={onChangeTaskName} value={taskNameState} />
-            <TextArea labelFor={"project-description"} title={"Description"} idName={"project-description"} onchange={onChangeDesc} value={taskDescState}/>
+            <TextArea labelFor={"project-description"} title={"Description"} idName={"project-description"} onChange={onChangeDesc} value={taskDescState}/>
             <InputField labelFor={"project-start-date"} title={"Due Date"} type={"Date"} idName={"project-start-date"} onChange={onChangeDueDate} value={dueDateState}/>
             <DropDownBox label={"Owner"} idName={"project-status"} options={userListState} onChange={onChangeOwner} value={taskownerState} owner={true} />
             <DropDownBox label={"Status"} idName={"project-status"} options={["IN_PROGRESS", "COMPLETED"]} onChange={onChangeStatus} value={taskStatusState} status={true}/>
