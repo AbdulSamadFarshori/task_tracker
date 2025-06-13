@@ -17,7 +17,6 @@ export default function TaskRowComponent({id, name, description, due_date, statu
 
             const accessToken = window.localStorage.getItem('accessToken');
             const res = await DeleteTask(id, accessToken);
-            console.log(res);
             window.location.reload();
     
         }

@@ -8,6 +8,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+.env
 node_modules
 build/
 develop-eggs/
@@ -52,7 +53,7 @@ coverage.xml
 .pytest_cache/
 cover/
 
-.env
+/.env
 env-2/
 venv/
 
