@@ -93,6 +93,11 @@ function ProjectAddForm(){
         }
 
     }
+
+    const username = window.localStorage.getItem('username');
+
+    console.log(username);
+
     
     return (<div className="create-project-container">
         <h2>Create New Project</h2>
@@ -103,7 +108,7 @@ function ProjectAddForm(){
             <InputField labelFor={"project-start-date"} title={"Start Date"} type={"date"} idName = {"project-start-date"} onChange = {startDateChangeValue} value={startDateState}/>
             <InputField labelFor={"project-end-date"} title={"End Date"} type={"date"} idName = {"project-end-date"} onChange = {endDateChangeValue} value={endDateState}/>
             <DropDownBox label={"Status"} id={"project-status"} options={["NEW", "IN_PROGRESS", "COMPLETED", "NOT_STARTED"]} onChange={statusChangeValue} value={statusState} status={true} />
-            <DropDownBox label={"Owner"} id={"project-status"} value={ownerState} options={userListState} onChange={ownerChangeValue} owner={true}/>
+            <DropDownBox label={"Owner"} id={"project-status"} options={[username]} onChange={ownerChangeValue} status={true}/>
             <Button type={"button"} onClick={onSubmitNewProject} name={"Create Project"}/>
         </form>
     </div>);
@@ -276,7 +281,7 @@ function UserAddForm(){
         {notificationState}
         <form id="create-project-form">
             <InputField labelFor={"project-name"} title={"Username"} type={"text"} idName={"project-name"} value={userNameState} onChange={usernameChangeValue} />
-            <InputField labelFor={"project-name"} title={"Email"} type={"text"} idName={"project-name"} value={emailState} onChange={emailChangeValue} />
+            <InputField labelFor={"project-name"} title={"Email"} type={"email"} idName={"project-name"} value={emailState} onChange={emailChangeValue} />
             <InputField labelFor={"project-name"} title={"Password"} type={"password"} idName={"project-name"} value={passwordState} onChange={passwordChangeValue} />
             <DropDownBox label={"Role"} idName={"project-status"} options={["ADMIN", "STAFF"]} value={roleState} onChange={roleChangeValue} status={true}/>
             <Button type={"button"} onClick={onSubmitForm} name={"Create User"}/>

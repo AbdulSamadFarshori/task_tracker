@@ -17,11 +17,24 @@ export async function PostRequest(url, payload, accessToken){
         });
         const resData = await response.json();
         if  (!response.ok){
-            return {status:'fail', data: resData}
+            
+            if (response.status === 403){
+                return {status:'success', data: {"status": "error", "msg": "unauthorized request !!"}}
+            }
+            else if (response.status === 500){
+                return {status:'success', data: {"status": "error", "msg": "Server Error"}}
+            }
+            else if (response.status === 422){
+                return {status:'success', data: {"status": "error", "msg": "bad request !!"}}
+            }
+            else{
+                return {status:'fail', data: resData}
+            }
         }
-        else{
+        else if (response.ok){
             return {status:'success', data: resData}
         }
+        
         
     }
     else{    
@@ -34,7 +47,15 @@ export async function PostRequest(url, payload, accessToken){
         });
         const resData = await response.json();
         if  (!response.ok){
-            return {status:'fail', data: []}
+            if (response.status === 403){
+                return {status:'success', data: {"status": "error", "msg": "Something Went Wrong"}}
+            }
+            else if (response.status === 500){
+                return {status:'success', data: {"status": "error", "msg": "Server Error"}}
+            }
+            else{
+                return {status:'fail', data: resData}
+            }
         }
         else{
             return {status:'success', data: resData}
@@ -53,12 +74,19 @@ export async function GetRequest(url, accessToken){
     const resData = await response.json();
     
     if  (!response.ok){
-        return {status:'fail', data: []}
+        if (response.status === 403){
+                return {status:'success', data: {"status": "error", "msg": "Something Went Wrong"}}
+            }
+            else if (response.status === 500){
+                return {status:'success', data: {"status": "error", "msg": "Server Error"}}
+            }
+            else{
+                return {status:'fail', data: resData}
+            }
     }
     else{
         return {status:'success', data: resData}
     } 
-
 }
 
 export async function PutRequest(url, payload, accessToken){
@@ -75,11 +103,18 @@ export async function PutRequest(url, payload, accessToken){
     console.log(resData);
 
     if  (!response.ok){
-        return {status:'fail', data: []}
+        if (response.status === 403){
+                return {status:'success', data: {"status": "error", "msg": "Something Went Wrong"}}
+            }
+            else if (response.status === 500){
+                return {status:'success', data: {"status": "error", "msg": "Server Error"}}
+            }
+            else{
+                return {status:'fail', data: resData}
+            }
     }
     else{
         return {status:'success', data: resData}
-
     }
 }
 
@@ -91,9 +126,16 @@ export async function DeleteRequest(url, accessToken){
         }
     });
     const resData = await response.json();
-    
     if  (!response.ok){
-        return {status:'fail', data: []}
+        if (response.status === 403){
+                return {status:'success', data: {"status": "error", "msg": "Something Went Wrong"}}
+            }
+            else if (response.status === 500){
+                return {status:'success', data: {"status": "error", "msg": "Server Error"}}
+            }
+            else{
+                return {status:'fail', data: resData}
+            }
     }
     else{
         return {status:'success', data: resData}

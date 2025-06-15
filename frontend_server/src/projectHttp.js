@@ -23,7 +23,7 @@ export async function getProjectDetailsById(accessToken, id){
 
 export async function updateProjectDetails(payload, accessToken){
     const res = await PutRequest(projectURL, payload, accessToken);
-    return res
+    return res.data
 }
 
 export async function deleteProjectById(id, accessToken){

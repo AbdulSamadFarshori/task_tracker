@@ -31,6 +31,7 @@ class ProjectApiView(MethodView):
     @permission()
     @bp.arguments(PostProjectSchema)
     def post(self, reqs):
+        print(reqs)
         try:
             user_data = UserModel.query.filter(UserModel.username == reqs['user']).first()
             reqs.pop('user')

@@ -22,7 +22,7 @@ export async function getTaskDetailsById(id, accessToken){
 
 export async function updateTaskDetails(payload, accessToken){
     const res = await PutRequest(TaskURL, payload, accessToken);
-    return res
+    return res.data
 }
 
 export async function DeleteTask(id, accessToken){

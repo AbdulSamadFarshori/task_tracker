@@ -34,21 +34,17 @@ class UsersCRUDApiViews(MethodView):
     @bp.response(200, GetUserSchema)
     def post(self, userSchema):
         try:
-            userSchema["password"] = pbkdf2_sha256.hash(userSchema["password"])
             data = UserModel(**userSchema)
             data.save()
             return jsonify({"status": "ok", "msg": "user has been successfully added"}), 201
-        except ValidationError as e:
-            return jsonify({"status":"error", "msg":e.errors()}), 400
         except Exception as e:
             logger.error(e)
-            return jsonify({"status":"error", "msg": f"An unexpected error occurred: {str(e)}"}), 500
+            return jsonify({"status":"error", "msg": f"{str(e)}"}), 500
 
     @jwt_required()
     @permission() 
     @bp.arguments(UpdateUserSchema)
     def put(self, reqs):
-        print(reqs)
         if reqs:
             user_id = reqs['id']
             data = UserModel.query.filter(UserModel.id==user_id).first()
@@ -57,12 +53,10 @@ class UsersCRUDApiViews(MethodView):
                     data.username = reqs['username'] if reqs['username'] != "" and reqs['username'] != data.username else data.username
                     data.email = reqs['email'] if reqs['email'] != "" and reqs['email'] != data.email else data.email
                     hash_password = pbkdf2_sha256.hash(reqs['password']) if reqs['password'] or reqs['password'] != "" else None
-                    data.password = hash_password if hash_password is not None and hash_password != data.password  else data.password
+                    data.password = reqs['password'] if hash_password is not None and hash_password != data.password  else data.password
                     data.role = reqs['role'] if reqs['role'] != data.role else data.role
                     data.save()
                     return jsonify({"status": "ok", "msg": "user has been successfully edited"}), 201 
-                except ValidationError as e:
-                    return jsonify({"status":"error", "msg":e.errors()}), 400
                 except Exception as e:
                     logger.error(e)
                     return jsonify({"status":"error", "msg" : f"An unexpected error occurred: {str(e)}"}), 500

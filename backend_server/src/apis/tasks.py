@@ -75,10 +75,10 @@ class TaskAPIView(MethodView):
                 data.save()
                 return jsonify({"status":"ok", "msg": "successfully edited the task"}), 200
             else:
-                return abort(404, message="Task is not available in the database.")
+                return jsonify({"status":"error", "msg": "Task not found"}), 404
         except Exception as e:
             logger.error(e)
-            return jsonify({"status":"error", "msg": f"An unexpected error occurred: {str(e)}"}), 500
+            return jsonify({"status":"error", "msg": {str(e)}}), 500
         
     @jwt_required()
     def delete(self, task_id):

@@ -30,6 +30,7 @@ function ProjectEditForm({id, name, description, startDate, endDate, status, own
     const [endDateEditState, setEndDateEditState] = useState(endDate||"");
     const [statusEditState, setStatusEditState] = useState(status||"");
     const [ownerEditState, setOwnerEditState] = useState(owner||"");
+    const [notificationState, setNotificationState] = useState(<p></p>);
 
     useEffect(() => {
         setNameEditState(name || "");
@@ -64,7 +65,6 @@ function ProjectEditForm({id, name, description, startDate, endDate, status, own
         setOwnerEditState(e.target.value);
     }
 
-    console.log(statusEditState);
 
     async function onSubmitEditForm(){
         const accessToken = window.localStorage.getItem('accessToken');
@@ -78,22 +78,36 @@ function ProjectEditForm({id, name, description, startDate, endDate, status, own
             owner : ownerEditState
         }
 
-        console.log(payload);
-
         const res = await updateProjectDetails(payload, accessToken)
-        window.location.reload()
-
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        
+        function onCloseNotify(){
+                const notification = <></>;
+                setNotificationState(notification)
+            }
+            
+            if (res.status === "ok"){
+                 const notification = <div id="notfy-success" className="notfy-success"> {res.msg} <span class="notfy-close" onClick={onCloseNotify}>&times;</span></div>;
+                setNotificationState(notification)
+            }
+            else{
+                const notification = <div id="notfy-error" className="notfy-error"> {res.msg} <span class="notfy-close" onClick={onCloseNotify}>&times;</span></div>;
+                setNotificationState(notification)
+            }       
     }
+
+    const username = window.localStorage.getItem("username");
 
     return <div class="create-project-container">
                     <h2>Edit Project</h2>
+                    {notificationState}
             <form id="create-project-form">
                 <InputField labelFor={"project-name"} title={"Project Name"} type={"text"} idName={"project-name"} value={nameEditState} onChange={nameChangeValue}/>
                 <TextArea labelFor={"project-description"} title={"Description"} idName={"project-description"} value={descEditState} onChange={descChangeValue}/>
                 <InputField labelFor={"project-start-date"} title={"Start Date"} type={"date"} idName={"project-start-date"} value={startDateEditState} onChange={startDateChangeValue}/>
                 <InputField labelFor={"project-end-date"} title={"End Date"} type={"date"} idName={"project-end-date"} value={endDateEditState} onChange={endDateChangeValue}/>
                 <DropDownBox label={"Status"} id={"project-status"} options={["NEW", "IN_PROGRESS", "COMPLETED", "NOT_STARTED"]} onChange={statusChangeValue} value={statusEditState} status={true} />
-                <DropDownBox label={"Owner"} id={"project-status"} value={ownerEditState} options={userNameListState} onChange={ownerChangeValue} owner={true}/>
+                <DropDownBox label={"Owner"} id={"project-status"} value={ownerEditState} options={[username]} onChange={ownerChangeValue} status={true}/>
                 <Button type={"button"} onClick={onSubmitEditForm} name={"Save"}/>
             </form>
         </div>
@@ -103,6 +117,8 @@ function ProjectEditForm({id, name, description, startDate, endDate, status, own
 function StaffTaskEditForm({id, status}){
     const [statusState, setStatusState] = useState(status || '');
     const [idState, setIdState] = useState(id ||'')
+    const [notificationState, setNotificationState] = useState(<p></p>);
+
 
     
     useEffect(()=>{
@@ -123,12 +139,28 @@ function StaffTaskEditForm({id, status}){
         }
         const accessToken = window.localStorage.getItem('accessToken');
         const res = await updateTaskDetails(payload, accessToken);
-        window.location.reload()
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        
+        function onCloseNotify(){
+                const notification = <></>;
+                setNotificationState(notification)
+            }
+            
+            if (res.status === "ok"){
+                 const notification = <div id="notfy-success" className="notfy-success"> {res.msg} <span class="notfy-close" onClick={onCloseNotify}>&times;</span></div>;
+                setNotificationState(notification)
+            }
+            else{
+                const notification = <div id="notfy-error" className="notfy-error"> {res.msg} <span class="notfy-close" onClick={onCloseNotify}>&times;</span></div>;
+                setNotificationState(notification)
+            }       
+
 
     }
 
     return <div class="create-project-container">
     <h2>Edit Task</h2>
+    {notificationState}
     <form id="create-project-form">
         <DropDownBox label={"Status"} idName={"project-status"} options={["IN_PROGRESS","COMPLETED"]} value={statusState} onChange={onStatusChange}/>
         <Button type={"button"} onClick={onSubmitTaskEditFrom} name={"Save"}/>
@@ -148,6 +180,8 @@ function TaskEditForm({id, name, description, dueDate, owner, status, projectNam
     const [descState, setDescState] = useState(description || '');
     const [nameState, setNameState] = useState(name || '');
     const [idState, setIdState] = useState(id ||'')
+    const [notificationState, setNotificationState] = useState(<p></p>);
+
 
 
     useEffect(()=>{
@@ -193,7 +227,6 @@ function TaskEditForm({id, name, description, dueDate, owner, status, projectNam
 
     async function onSubmitTaskEditFrom(){
 
-        console.log(idState);
 
         const payload = {
             id : idState,
@@ -205,14 +238,28 @@ function TaskEditForm({id, name, description, dueDate, owner, status, projectNam
             project : projectNameState
         }
         const accessToken = window.localStorage.getItem('accessToken');
-        console.log(payload);
         const res = await updateTaskDetails(payload, accessToken);
-        
+        window.scrollTo({ top: 0, behavior: 'instant' });
+
+        function onCloseNotify(){
+                const notification = <></>;
+                setNotificationState(notification)
+            }
+            
+            if (res.status === "ok"){
+                 const notification = <div id="notfy-success" className="notfy-success"> {res.msg} <span class="notfy-close" onClick={onCloseNotify}>&times;</span></div>;
+                setNotificationState(notification)
+            }
+            else{
+                const notification = <div id="notfy-error" className="notfy-error"> {res.msg} <span class="notfy-close" onClick={onCloseNotify}>&times;</span></div>;
+                setNotificationState(notification)
+            }        
 
     } 
 
     return <div class="create-project-container">
                 <h2>Edit Task</h2>
+                {notificationState}
                 <form id="create-project-form">
                     <InputField labelFor={"project-name"} title={"Task Name"} type={"text"} idName={"project-name"} value={nameState} onChange={onNameChange}/>
                     <TextArea labelFor={"project-description"} title={"Description"} idName={"project-description"} value={descState} onChange={onDescChange}/>
@@ -233,6 +280,8 @@ function TaskEditForm({id, name, description, dueDate, owner, status, projectNam
         const [roleEditState, setRoleEditState] = useState(role||"");
 
         const [passwordEditState, setPasswordEditState] = useState("");
+        const [notificationState, setNotificationState] = useState(<p></p>);
+
 
         useEffect(() => {
             setUserNameEditState(userName || "");
@@ -263,19 +312,34 @@ function TaskEditForm({id, name, description, dueDate, owner, status, projectNam
 
             }
 
-            console.log(payload);
-
             const accessToken = window.localStorage.getItem('accessToken');
             const res = await editUserDetails(payload, accessToken);
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            
+            function onCloseNotify(){
+                const notification = <></>;
+                setNotificationState(notification)
+            }
+            
+            if (res.status === "ok"){
+                 const notification = <div id="notfy-success" className="notfy-success"> {res.msg} <span class="notfy-close" onClick={onCloseNotify}>&times;</span></div>;
+                setNotificationState(notification)
+            }
+            else{
+                const notification = <div id="notfy-error" className="notfy-error"> {res.msg} <span class="notfy-close" onClick={onCloseNotify}>&times;</span></div>;
+                setNotificationState(notification)
+            }
+
 
         } 
 
         return <div class="create-project-container">
         <h2>Edit User</h2>
+        {notificationState}
         <form id="create-project-form">
             <InputField labelFor={"project-name"} title={"Username"} type={"text"} idName={"project-name"} value={userNameEditState} onChange={usenameOnChange} />
-            <InputField labelFor={"project-name"} title={"Email"} type={"text"} idName={"project-name"} value={emailEditState} onChange={emailOnChange} />
-            <InputField labelFor={"project-name"} title={"Password"} type={"text"} idName={"project-name"} value={""} onChange={passwordOnChange} />
+            <InputField labelFor={"project-name"} title={"Email"} type={"email"} idName={"project-name"} value={emailEditState} onChange={emailOnChange} />
+            <InputField labelFor={"project-name"} title={"Password"} type={"password"} idName={"project-name"} value={passwordEditState} onChange={passwordOnChange} />
             <DropDownBox label={"Role"} idName={"project-status"} options={["ADMIN", "STAFF"]} value={roleEditState} onChange={roleOnChange}status={true} />
             <Button type={"button"} onClick={onSubmitForm} name={"Save"} />
         </form>

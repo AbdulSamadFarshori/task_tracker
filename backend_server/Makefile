@@ -4,4 +4,7 @@ Migrations:
 Migrate:
 	alembic upgrade head
 
+Add-Data:
+	python ./seeding.py
+
 

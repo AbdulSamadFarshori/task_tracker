@@ -34,22 +34,9 @@ class PostUserSchema(Schema):
     username = fields.Str(required=True)
     email = fields.Str(required=True)
     password = fields.Str(required=True, load_only=True)
-    role = fields.Enum(UserRole)
-    
-    @validates('password')
-    def validate_password(self, value: str, data_key: str):
-        if len(value) <= 5:
-            raise Exception("Password should contain 12 or more than 12 characters")
-        if not re.search(r"[a-z]", value):
-            raise ValueError("Password must contain at least one lowercase letter")
-        if not re.search(r"[A-Z]", value):
-            raise ValueError("Password must contain at least one uppercase letter")
-        if not re.search(r"\d", value):
-            raise ValueError("Password must contain at least one digit")
-        if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", value):
-            raise ValueError("Password must contain at least one special character")
-        return value
-     
+    role = fields.Enum(UserRole)    
+
+   
 class LoginSchema(Schema):
     username = fields.Str(required=True)
     password = fields.Str(required=True, load_only=True)

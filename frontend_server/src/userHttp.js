@@ -43,5 +43,5 @@ export async function DeleteUserByIdDetails(accessToken, id){
 
 export async function editUserDetails(payload, accessToken){
     const res = await PutRequest(UserURL, payload, accessToken);
-    return res
+    return res.data
 }
