@@ -1,23 +1,18 @@
 from functools import wraps
 from flask import request, jsonify
-from flask_jwt_extended import decode_token
 from src.models.users import UserModel
+from flask_jwt_extended import get_jwt_identity
 
-def permission():
+
+def permission(*roles):  
     def decorator(fn):
         @wraps(fn)
         def wrapper(*args, **kwargs):
-            auth_header = request.headers.get("Authorization", "")
-            token = auth_header.replace("Bearer ", "") if auth_header.startswith("Bearer ") else auth_header
-            try:
-                decoded = decode_token(token)
-                username = decoded.get('sub')
-                userdata = UserModel.query.filter(UserModel.username == username).first()
-                if userdata.role.value == "ADMIN":
-                    return fn(*args, **kwargs)
-                else:
-                    return jsonify({"error": "Permission denied"}), 403    
-            except Exception as e:
-                return jsonify({"error": f"Permission denied: {str(e)}"}), 403
+            username = get_jwt_identity()
+            user = UserModel.query.filter(UserModel.username == username).first()
+            user_roles = [r.role.name for r in user.roles]
+            if not any(role in user_roles for role in roles):
+                return jsonify({"msg": "Access Denied"}), 403
+            return fn(*args, **kwargs)
         return wrapper
     return decorator

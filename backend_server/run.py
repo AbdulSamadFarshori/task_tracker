@@ -14,6 +14,7 @@ from src.apis.login import bp as LoginBlueprint
 from src.apis.projects import bp as ProjectBlueprint
 from src.apis.google_auth import bp as SSOBlueprint
 from src.apis.tasks import bp as TaskBlueprint
+from src.apis.roles import bp as RoleBlueprint
 from config import SECRET_KEY, JWT_SECRET_KEY, DB_CONNECTION
 
 
@@ -69,6 +70,7 @@ api.register_blueprint(LoginBlueprint)
 api.register_blueprint(SSOBlueprint)
 api.register_blueprint(ProjectBlueprint)
 api.register_blueprint(TaskBlueprint)
+api.register_blueprint(RoleBlueprint)
 
 
 

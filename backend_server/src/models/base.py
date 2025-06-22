@@ -15,6 +15,14 @@ class BaseModel(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+    
+    @staticmethod
+    def bulk_save(obj):
+        db.session.bulk_save_objects(obj)
+        db.session.commit()
+    
+    def roll_back(self):
+        db.session.rollback()
 
 
     

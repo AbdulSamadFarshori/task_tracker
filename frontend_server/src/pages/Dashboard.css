@@ -1,0 +1,41 @@
+.dashboard {
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.subtitle {
+  color: #777;
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+}
+
+.dashboard-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.dash-card {
+  flex: 1 1 250px;
+  background: linear-gradient(135deg, #1d3557, #457b9d);
+  color: white;
+  padding: 20px;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dash-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.dash-card h3 {
+  margin: 0 0 8px;
+}
+
+.dash-card p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #eee;
+}

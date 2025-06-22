@@ -6,9 +6,8 @@ from flask.views import MethodView
 from passlib.hash import pbkdf2_sha256
 from flask_jwt_extended.exceptions import JWTDecodeError
 from logger import logger
-from src.models.users import UserModel
-from src.models.tokens import TokensModel
-from src.schemas.schema import LoginSchema, LoginOutputSchema
+from src.models.users import UserModel, UserRoleModel
+from src.schemas.login_schema import LoginSchema, LoginOutputSchema, LoginUserSchema
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity
 
 bp = Blueprint('login', __name__, url_prefix='/api/login', description="Handle login operations")
@@ -23,24 +22,16 @@ class LoginViewApi(MethodView):
             username = reqs["username"]
             password = reqs["password"]
             data = UserModel.query.filter(UserModel.username == username).first()
+            user_role = UserRoleModel.query.filter(UserRoleModel.user_id == data.id).all()
+            roles = [obj.role.name for obj in user_role]
             if data and  pbkdf2_sha256.verify(password, data.password):
                 access_token = create_access_token(identity=data.username)
-                refresh_token = create_refresh_token(identity=data.username)
-                check_record = TokensModel.query.filter(TokensModel.user_id == data.id).first()
-                if not check_record:
-                    token_data = TokensModel(user_id=data.id, access_token=access_token, refresh_token=refresh_token)
-                    token_data.save()
-                else:
-                    check_record.updated_at = datetime.utcnow()
-                    check_record.access_token = access_token
-                    check_record.refresh_token = refresh_token
-                    check_record.save()
-                    result = {
-                        "status": "ok",
-                        "username": data.username, 
-                        "user_id": data.id, 
-                        "role": data.role,
-                        "access_token": access_token
+                user = LoginUserSchema().dump(data)
+
+                result = {
+                            "user":user,
+                            "token":access_token,
+                            "roles": roles
                         }
                 return result, 200 
             return jsonify({"status": "error", "msg":"username or password invalid"}), 200
