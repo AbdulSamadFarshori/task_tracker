@@ -15,7 +15,7 @@ from src.apis.projects import bp as ProjectBlueprint
 from src.apis.google_auth import bp as SSOBlueprint
 from src.apis.tasks import bp as TaskBlueprint
 from src.apis.roles import bp as RoleBlueprint
-from config import SECRET_KEY, JWT_SECRET_KEY, DB_CONNECTION
+from config import SECRET_KEY, JWT_SECRET_KEY, DB_CONNECTION, AWS_DB_CONNECTION
 
 
 app = Flask("__name___")
@@ -34,7 +34,7 @@ app.config["OPENAPI_URL_PREFIX"] = "/"
 app.config["OPENAPI_SWAGGER_UI_PATH"] = "/swagger-ui"
 app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
 app.config["SECRET_KEY"] = SECRET_KEY
-app.config["SQLALCHEMY_DATABASE_URI"] = DB_CONNECTION
+app.config["SQLALCHEMY_DATABASE_URI"] = AWS_DB_CONNECTION
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)
 
 db.init_app(app)

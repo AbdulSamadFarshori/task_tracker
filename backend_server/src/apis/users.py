@@ -98,8 +98,32 @@ class GetUserNameAPIView(MethodView):
             logger.error(e)
             return jsonify({"status":"error", "msg": f"An unexpected error occurred: {str(e)}"}), 500
 
-user_view = UsersCRUDApiViews.as_view("user")
+class CreateSuperUserApiView(MethodView):
 
+    @bp.arguments(PostUserSchema)
+    @bp.response(200, GetUserSchema(many=False))
+    def post(self, userSchema):
+        try:
+            user_db = UserModel.query.all()
+            if len(user_db) == 1:
+                data = UserModel(**userSchema)
+                data.save()
+                role = RoleModel(name="Admin")
+                role.save()
+                user_role = UserRoleModel(user_id=data.id, role_id=role.id)
+                user_role.save()
+                return data, 200
+            return jsonify({"status":"error", "msg": "user already presents in DB"}), 403
+        except Exception as e:
+            logger.error(e)
+            print(e)
+            return jsonify({"status":"error", "msg": f"{str(e)}"}), 500
+
+
+user_view = UsersCRUDApiViews.as_view("user")
+superuser_view = CreateSuperUserApiView.as_view("superuser")
+
+bp.add_url_rule('/superuser/', view_func=superuser_view, methods=["POST"])
 bp.add_url_rule('/', view_func=user_view, methods=["POST", "GET"])
 bp.add_url_rule('/<int:user_id>', view_func=user_view, methods=["GET", "DELETE", "PUT"])
 
