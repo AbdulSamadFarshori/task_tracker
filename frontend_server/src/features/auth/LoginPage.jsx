@@ -39,7 +39,7 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(BaseURL + '/api/login/', { username, password });
+      const res = await axios.post(BaseURL + '/login/', { username, password });
       const { user, token, roles } = res.data;
 
       dispatch(loginSuccess({ user, token, roles }));
