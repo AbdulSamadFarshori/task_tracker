@@ -17,7 +17,6 @@ const rootReducer = combineReducers({
   tasks: tasksReducer,
 });
 
-// Persist config — only persist auth state
 const persistConfig = {
   key: 'root',
   storage,
@@ -27,7 +26,6 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-// Export store and persistor
 export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>

@@ -15,7 +15,6 @@ import { toast } from 'react-toastify';
 const TaskManager = () => {
   const { roles, user } = useSelector((state) => state.auth);
   
-  console.log(user.id)
   const dispatch = useDispatch();
   const { tasks, loading, error } = useSelector((state) => state.tasks);
 
@@ -31,24 +30,6 @@ const TaskManager = () => {
       }
   }, [error]);
 
-
-  // const handleAddClick = ()=>{
-  //   setAddMode(true);
-  // }
-
-  // const handleChange = (e) => {
-  //   setNewTask({ ...newTask, [e.target.name]: e.target.value });
-  // };
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   dispatch(createTask({name: newTask.name, 
-  //       description: newTask.description, 
-  //       due_date: newTask.due_date, 
-  //       assignee: newTask.assignee, 
-  //       project_id: projectId, 
-  //       created_by :user.id}));
-  // };
 
   const handleStatusUpdate = (taskId, newStatus) => {
     const update = {status: newStatus, changed_by: user.id}

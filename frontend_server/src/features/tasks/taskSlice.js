@@ -17,6 +17,12 @@ export const createTask = createAsyncThunk('tasks/create', async (taskData) => {
   return res.data;
 });
 
+export const updateTask = createAsyncThunk('tasks/update', async (data) => {
+  console.log(data);
+  const res = await axios.put(`/tasks/${data.id}`, data);
+  return res.data;
+});
+
 export const updateTaskStatus = createAsyncThunk('tasks/updateStatus', async ({taskId, updates}) => {
   const res = await axios.put(`/tasks/${taskId}/status`, updates);
   return res.data;
@@ -66,6 +72,12 @@ const tasksSlice = createSlice({
       })
       .addCase(createTask.rejected, (state, action) => {
         state.error = action.error?.message || 'Authentication failed';
+      })
+      .addCase(updateTask.fulfilled, (state, action) => {
+        const index = state.tasks.findIndex((t) => t.id === action.payload.id);
+        if (index !== -1) {
+          state.tasks[index] = action.payload;
+        }
       })
       .addCase(updateTaskStatus.fulfilled, (state, action) => {
         const index = state.tasks.findIndex((t) => t.id === action.payload.id);

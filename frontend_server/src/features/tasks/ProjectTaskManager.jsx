@@ -10,6 +10,7 @@ import { faTrash, faScrewdriverWrench, faSquareCheck, faSquarePlus } from '@fort
 import {
   fetchProjectAllTasks,
   createTask,
+  updateTask,
   updateTaskStatus,
   deleteTask
 } from './taskSlice';
@@ -42,6 +43,17 @@ useEffect(() => {
   });
 
 
+  const [editMode, setEditMode] = useState(false);
+  const [editTask, setEditTask] = useState({
+    name: '',
+    description: '',
+    due_date: '',
+    assignee: ''
+
+
+  });
+
+
   useEffect(() => {
     dispatch(fetchProjectAllTasks(projectId));
     dispatch(fetchUserNames());
@@ -50,6 +62,27 @@ useEffect(() => {
 
   const handleAddClick = ()=>{
     setAddMode(true);
+  }
+
+  const handleEditClick = (task) => {
+    setEditMode(true)
+    setEditTask({id: task.id,
+                name: task.name,
+                  description: task.description,
+                  due_date:task.due_date,
+                  assignee: task.assignments[0].assignee.username
+    })
+    console.log(editTask)
+  }
+
+  const handleEditChange = (e) => {
+    setEditTask({...editTask, [e.target.name]: e.target.value});
+  }
+
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+    const update= editTask;
+    dispatch(updateTask(update));
   }
 
   const handleChange = (e) => {
@@ -96,6 +129,31 @@ useEffect(() => {
       </form>
       </div>)
     }
+
+
+    {editMode && 
+      (<div style={{ marginTop: '20px' }}>
+        <h3>Edit-Task</h3>
+      <form onSubmit={handleEditSubmit}>
+        <label>Name</label>
+        <input name="name" placeholder="Name" value={editTask.name} onChange={handleEditChange} required />
+        <label>Description</label>
+        <textarea name="description" placeholder="Description" value={editTask.description} onChange={handleEditChange} />
+        <label>Due-Date</label>
+        <input name="due_date" type="date" value={editTask.due_date} onChange={handleEditChange} />
+        <label>Owner</label>
+        <select name="assignee" value={editTask.assignee} onChange={handleEditChange} required>
+            <option value="">Select...</option>
+                {userName.map((data, idx)=>(
+                        <option key={idx} value={data.id}>{data.username}</option>
+                ))}
+        </select>
+
+        <button type="submit" >Edit Task</button>
+        <button type="submit" onClick={()=>{setEditMode(false)}}>Cancel</button>
+      </form>
+      </div>)
+    }
       
         {addMode? <></> :<button type="button" onClick={() => handleAddClick()}><FontAwesomeIcon icon={faSquarePlus} /> Task </button>}
       <h2>Task Manager</h2>
@@ -138,7 +196,8 @@ useEffect(() => {
                     </button>
                   )
                   }
-                    <Link type='button' onClick={()=>{dispatch(deleteTask(task.id))}}><FontAwesomeIcon icon={faTrash}/></Link> 
+                  <Link onClick={() => handleEditClick(task)}><FontAwesomeIcon icon={faScrewdriverWrench} /></Link>
+                  <Link type='button' onClick={()=>{dispatch(deleteTask(task.id))}}><FontAwesomeIcon icon={faTrash}/></Link> 
                 </td>
               </tr>
             ))}

@@ -51,7 +51,6 @@ const UserManager = () => {
   };
 
   const handleAddSubmit = (e) => {
-    console.log(addData)
     e.preventDefault();
     dispatch(addUser({username: addData.username, email: addData.email, password: addData.password}));
     setAddMode(false);
@@ -64,9 +63,7 @@ const UserManager = () => {
   };
 
   const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
       dispatch(deleteUser(id));
-    }
   };
 
   return (

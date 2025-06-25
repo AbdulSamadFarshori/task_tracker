@@ -23,7 +23,7 @@ const App = () => {
     <Router>
       <Navbar />
 
-      <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
+      <ToastContainer position="top-center" autoClose={3000}/>
 
       <div className="main-content" style={{ padding: '20px' }}>
 

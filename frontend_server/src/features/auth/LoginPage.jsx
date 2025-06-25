@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { BaseURL, key } from '../../config';
 import { toast } from 'react-toastify';
 import { Navigate } from 'react-router-dom';
-
+import { login } from './authSlice';
 import './login.css';
 
 
@@ -18,7 +18,7 @@ function SingleSignOnButton(){
     const { error } = useSelector(state => state.auth);
 
     const responseMessage = (response) => {
-        dispatch(googleAuth(response)).then(navigate('/dashboard'));
+        dispatch(googleAuth(response)).then(() => navigate('/dashboard'));
         
         
     }
@@ -38,15 +38,9 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    try {
-      const res = await axios.post(BaseURL + '/login/', { username, password });
-      const { user, token, roles } = res.data;
-
-      dispatch(loginSuccess({ user, token, roles }));
-      navigate('/dashboard');
-    } catch (err) {
-      toast.error('Login failed');
-    }
+      dispatch(login({username:username, password:password}))
+      .then(() => navigate('/dashboard'));
+    
   };
 
   return (
