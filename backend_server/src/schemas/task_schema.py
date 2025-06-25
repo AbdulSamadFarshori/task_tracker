@@ -21,10 +21,8 @@ class PostTaskSchema(Schema):
 class TaskAssignmentSchema(Schema):
     task_id = fields.Int()
     user_id = fields.Int()
-    assigned_by = fields.Int()
     user = fields.Nested(GetUserSchema, many=False)
     assignee = fields.Nested(GetUserSchema, many=False)
-    assigner = fields.Nested(GetUserSchema, many=False)
 
 class GetTaskSchema(Schema):
     id = fields.Int()
@@ -41,8 +39,6 @@ class UpdateTaskSchema(Schema):
     name = fields.Str(required=False)
     description = fields.Str(required=False)
     due_date = fields.Date()
-    created_by = fields.Int()
-    project_id =  fields.Int()
     assignee = fields.Int()
 
 class UpdateTaskStatus(Schema):

@@ -27,7 +27,7 @@ class RoleApiView(MethodView):
         try:
             new_name = reqs.get('name')
             if role_id:
-                role = RoleModel.query.filter(RoleModel.id == role_id)
+                role = RoleModel.query.filter(RoleModel.id == role_id).first()
                 role.name = new_name
                 role.save()
                 return jsonify({"status":"ok", "msg":"Successfully updated !!"}), 200
@@ -50,7 +50,13 @@ class RoleApiView(MethodView):
     @jwt_required()
     @permission('Admin')
     def delete(self, role_id):
-        pass
+        try:
+            data = RoleModel.query.filter(RoleModel.id == role_id).first()
+            data.delete()
+            return jsonify({"id":role_id})
+        except Exception as e:
+            return jsonify({"status":"error", "msg": str(e)}), 500
+
 
 class UserRoleApiVeiw(MethodView):
     

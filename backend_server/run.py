@@ -45,7 +45,7 @@ jwt = JWTManager(app)
 
 @jwt.expired_token_loader
 def expired_token_callback(jwt_header, jwt_payload):
-    return jsonify({"message": "the token has expired", "error":"expired token"})
+    return jsonify({"message": "the token has expired", "error":"expired token"}), 401
 
 @jwt.invalid_token_loader
 def invalid_token_callback(error):
@@ -54,11 +54,11 @@ def invalid_token_callback(error):
 
     # Log or print the token (not recommended in production)
     print("Received invalid token:", token)
-    return jsonify({"massege":"signature validation failed.", "error":"invalid token"})
+    return jsonify({"massege":"signature validation failed.", "error":"invalid token"}), 401
 
 @jwt.unauthorized_loader
 def missing_token_loader(error):
-    return jsonify({"message":"Request does not contain an access token.", "error":"authorization required"})
+    return jsonify({"message":"Request does not contain an access token.", "error":"authorization required"}), 401
 
 with app.app_context():
     db.create_all()

@@ -105,7 +105,7 @@ class CreateSuperUserApiView(MethodView):
     def post(self, userSchema):
         try:
             user_db = UserModel.query.all()
-            if len(user_db) == 1:
+            if len(user_db) == 0:
                 data = UserModel(**userSchema)
                 data.save()
                 role = RoleModel(name="Admin")

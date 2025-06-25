@@ -28,10 +28,8 @@ class TaskAssignmentModel(BaseModel):
     
     task_id = db.Column(db.Integer, db.ForeignKey('tasks.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    assigned_by = db.Column(db.Integer, db.ForeignKey('users.id'))
     task = db.relationship('TaskModel', back_populates='assignments')
     assignee = db.relationship('UserModel', back_populates='assigned_tasks', foreign_keys=[user_id])
-    assigner = db.relationship('UserModel', foreign_keys=[assigned_by])
 
 class TaskLogModel(BaseModel):
     __tablename__ = 'task_logs'

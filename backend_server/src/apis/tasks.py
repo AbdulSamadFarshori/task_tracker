@@ -36,7 +36,6 @@ class TaskAPIView(MethodView):
         try: 
             assignment_data = dict()
             assignment_data['user_id'] = reqs.pop('assignee')
-            assignment_data['assigned_by'] = reqs.get('created_by')
             data = TaskModel(**reqs)
             data.save()
             assignment_data['task_id'] = data.id
@@ -58,11 +57,12 @@ class TaskAPIView(MethodView):
             assigned_data = TaskAssignmentModel.query.filter(TaskAssignmentModel.task_id == task_id).first()
             if data:
                 for key, value in reqs.items():
-                    if value != '' and getattr(data, key) != value:
-                        setattr(data, key, value) 
-                        if key == 'assignee':
-                            assigned_data.user_id = value
-                            assigned_data.save()
+                    if key != 'assignee':
+                        if value != '' and getattr(data, key) != value :
+                            setattr(data, key, value) 
+                    if key == 'assignee':
+                        assigned_data.user_id = value
+                        assigned_data.save()
                 data.save()
                 return data, 200
             else:
@@ -167,8 +167,8 @@ StaffTaskView = StaffTaskAPIView.as_view('staff_task')
 ProjectTaskView = ProjectTaskAPIView.as_view('project_task')
 TaskStatusview = TaskStatusChangeApiView.as_view('task_status')
 
-bp.add_url_rule('/', view_func=TaskView, methods=["POST", "GET", "PUT"])
-bp.add_url_rule('/<int:task_id>', view_func=TaskView, methods=["GET", "DELETE"])
+bp.add_url_rule('/', view_func=TaskView, methods=["POST", "GET"])
+bp.add_url_rule('/<int:task_id>', view_func=TaskView, methods=["GET", "DELETE", "PUT"])
 
 bp.add_url_rule('/staff/<int:user_id>', view_func=StaffTaskView, methods=["GET"])
 bp.add_url_rule('/staff/', view_func=StaffTaskView, methods=["PUT"])
