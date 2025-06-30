@@ -34,16 +34,15 @@ class UsersCRUDApiViews(MethodView):
     @bp.response(200, GetUserSchema(many=False))
     def post(self, userSchema):
         try:
-            print(userSchema)
+            userrole = userSchema.pop('role')
             data = UserModel(**userSchema)
             data.save()
-            default_role = RoleModel.query.filter(RoleModel.name=='Read-Only').first()
+            default_role = RoleModel.query.filter(RoleModel.name==userrole).first()
             user_role = UserRoleModel(user_id=data.id, role_id=default_role.id)
             user_role.save()
             return data, 200
         except Exception as e:
             logger.error(e)
-            print(e)
             return jsonify({"status":"error", "msg": f"{str(e)}"}), 500
 
     @jwt_required()
@@ -57,8 +56,14 @@ class UsersCRUDApiViews(MethodView):
                 data = UserModel.query.filter(UserModel.id==user_id).first()
                 if data:
                     for key, value in reqs.items():
-                        if value != "" and getattr(data, key) != value:
-                            setattr(data, key, value)
+                        if key != 'role':
+                            if value != "" and getattr(data, key) != value:
+                                setattr(data, key, value)
+                        else:
+                            roleuserdata = UserRoleModel.query.filter(UserRoleModel.user_id==user_id).first()
+                            roleId = RoleModel.query.filter(RoleModel.name == value).first()
+                            roleuserdata.role_id = roleId.id
+                            roleuserdata.save()
                     data.save()
                     return data, 200 
                 else:
@@ -67,6 +72,7 @@ class UsersCRUDApiViews(MethodView):
                 return jsonify({"status":"error", "msg":"user data is missing"}), 404
         except Exception as e:
             logger.error(e)
+            print(e)
             return jsonify({"status":"error", "msg" : f"An unexpected error occurred: {str(e)}"}), 500
 
     @jwt_required()

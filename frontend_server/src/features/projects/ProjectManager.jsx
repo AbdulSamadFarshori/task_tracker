@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faScrewdriverWrench, faSquarePlus } from '@fortawesome/free-solid-svg-icons';
-
+import './ProjectManager.css'
 
 
 import { 
@@ -54,30 +54,33 @@ const ProjectManager = () => {
     });
     
     const [addMode, setAddMode] = useState(false);
-
     const [editMode, setEditMode] = useState(false);
+    const [deleteMode, setDeleteMode] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [deleteId, setDeleteId] = useState('');
 
-    
     const [editData, setEditData] = useState({
         name:'', 
         description: '', 
         start_date: '', 
         end_date: '', 
-        created_by: ''
+        owner: ''
     });
 
-    const handleAddClick = () => {
+    const handleAddClick = () => { 
         setAddMode(true);
+        setShowModal(true);
     };
     
     const handleEditClick = (project) => {
         setEditMode(true);
+        setShowModal(true);
         setEditData({id: project.id, 
                     name: project.name, 
                     description: project.description, 
                     start_date: project.start_date, 
                     end_date: project.end_date, 
-                    created_by: project.users.id,
+                    owner: project.users.id,
                     });
     };
 
@@ -96,21 +99,31 @@ const ProjectManager = () => {
                 description: addData.description, 
                 start_date: addData.start_date, 
                 end_date: addData.end_date, 
-                created_by: addData.created_by}));
+                owner: addData.owner}));
         setAddMode(false);
+        setShowModal(false);
     };
 
     const handleEditSubmit = (e) => {
         e.preventDefault();
         dispatch(editProject({projectId: editData.id, update: editData}));
         setEditMode(false);
+        setShowModal(false);
     };
 
     const handleDelete = (id) => {
-        if (window.confirm('Are you sure you want to delete this user?')) {
-          dispatch(deleteProject(id));
-        }
+        setDeleteId(id);
+        setShowModal(true);
+        setDeleteMode(true);
     };
+
+    const handleSubmitDelete = ()=>{
+        dispatch(deleteProject(deleteId));
+        setDeleteId('');
+        setDeleteMode(false);
+        setShowModal(false);
+
+    }
 
     const handleStatusChangeSubmit = (e) => {
         setStatusData({...statusData, [e.target.name]: e.target.value});
@@ -123,62 +136,82 @@ const ProjectManager = () => {
     }
 
     return (
-         <div>
-            {addMode && (
-                <div style={{ marginTop: '20px' }}>
-                    <h3>Add Project</h3>
-                    <form onSubmit={handleAddSubmit}>
-                        <label>Project Name</label>
-                        <input name="name" value={addData.name} onChange={handleAddChange} placeholder="Name" required/>
-                        <label>Description</label>
-                        <textarea name="description" value={addData.description} onChange={handleAddChange} placeholder="Description" required />
-                        <label>Start-Date</label>
-                        <input name="start_date" type="date" value={addData.start_date} onChange={handleAddChange} placeholder="Start-Date" require />
-                        <label>End-Date</label>
-                        <input name="end_date" type="date" value={addData.end_date} onChange={handleAddChange} placeholder="End-Date" require />
-                        <label>Owner</label>
-                        <select name="created_by" value={addData.created_by} onChange={handleAddChange} required>
-                            <option value="">Select...</option>
-                            {userName.map((data, idx)=>(
-                                <option key={idx} value={data.id}>{data.username}</option>
-                            ))}
-                        </select>
-                        {/* <label>Status</label>
-                        <input name="status" value={addData.status} onChange={handleAddChange} placeholder="Status" required/> */}
-                        
-                        <button type="submit">Save</button>
-                        <button type="button" onClick={() => setAddMode(false)} style={{ marginLeft: '10px' }}>Cancel</button>
-                    </form>
-                </div>
-            )}
-            {addMode || editMode || !hasRole('Admin')? <></> :<button type="button" onClick={() => handleAddClick()}><FontAwesomeIcon icon={faSquarePlus}/> Project</button>}
+         <>
+            {showModal && (
+            <div className="modal-backdrop">
+                <div className="modal">
+                {addMode && (
+                <>
+                <h3>Add Project</h3>
+                <form className="modal-form">
+                <label><h5>Project Name</h5></label>
+                <input name="name" value={addData.name} onChange={handleAddChange} placeholder="Name" required/>
+                <label><h5>Description</h5></label>
+                <textarea name="description" value={addData.description} onChange={handleAddChange} placeholder="Description" required />
+                <label><h5>Start-Date</h5></label>
+                <input name="start_date" type="date" value={addData.start_date} onChange={handleAddChange} placeholder="Start-Date" require />
+                <label><h5>End-Date</h5></label>
+                <input name="end_date" type="date" value={addData.end_date} onChange={handleAddChange} placeholder="End-Date" require />
+                <label><h5>Owner</h5></label>
+                <select name="owner" value={addData.owner} onChange={handleAddChange} required>
+                    <option value="">Select...</option>
+                    {userName.map((data, idx)=>(
+                        data.roles[0].role.name === "Task-Creator" ? <option key={idx} value={data.id}>{data.username}</option>: <></>
+                    ))}
+                </select>
+                {/* <label>Status</label>
+                <input name="status" value={addData.status} onChange={handleAddChange} placeholder="Status" required/> */}
+                <button type="button" className="save-button" onClick={handleAddSubmit}>Save</button>
+                <button type="button" className="close-button" onClick={() => {setAddMode(false); setShowModal(false)}}>Cancel</button>
+                </form>
+
+                </>
+                )}
+
             {editMode && (
-                <div style={{ marginTop: '20px' }}>
-                    <h3>Edit Project</h3>
-                        <form onSubmit={handleEditSubmit}>
-                            <label>Project Name</label>
-                            <input name="name" value={editData.name} onChange={handleEditChange} placeholder="Name" required/>
-                            <label>Description</label>
-                            <input name="description" type= "text" value={editData.description} onChange={handleEditChange} placeholder="Description" required />
-                            <label>Start-Date</label>
-                            <input name="start_date" type="date" value={editData.start_date} onChange={handleEditChange} placeholder="Start-Date" require />
-                            <label>End-Date</label>
-                            <input name="end_date" type="date" value={editData.end_date} onChange={handleEditChange} placeholder="End-Date" require />
-                            <label>Owner</label>
-                            <select name="created_by" value={editData.created_by} onChange={handleEditChange} required>
-                                <option value="">Select...</option>
-                                {userName.map((data, idx)=>(
-                                    <option key={idx} value={data.id}>{data.username}</option>
-                                ))}
-                            </select>
-                            {/* <label>Status</label>
-                            <input name="status" value={editData.status} onChange={handleEditChange} placeholder="Status" required/> */}
-                            
-                            <button type="submit">Save</button>
-                            <button type="button" onClick={() => setEditMode(false)} style={{ marginLeft: '10px' }}>Cancel</button>
-                        </form>
-                </div>
+                <>
+                <h3>Edit Project</h3>
+                <form className="modal-form">
+                <label><h5>Project Name</h5></label>
+                <input name="name" value={editData.name} onChange={handleEditChange} placeholder="Name" required/>
+                <label><h5>Description</h5></label>
+                <input name="description" type= "text" value={editData.description} onChange={handleEditChange} placeholder="Description" required />
+                <label><h5>Start-Date</h5></label>
+                <input name="start_date" type="date" value={editData.start_date} onChange={handleEditChange} placeholder="Start-Date" require />
+                <label><h5>End-Date</h5></label>
+                <input name="end_date" type="date" value={editData.end_date} onChange={handleEditChange} placeholder="End-Date" require />
+                <label><h5>Owner</h5></label>
+                <select name="owner" value={editData.owner} onChange={handleEditChange} required>
+                    <option value="">Select...</option>
+                    {userName.map((data, idx)=>(
+                        data.roles[0].role.name === "Task-Creator" ? <option key={idx} value={data.id}>{data.username}</option>: <></>
+                    ))}
+                </select>
+                {/* <label>Status</label>
+                <input name="status" value={editData.status} onChange={handleEditChange} placeholder="Status" required/> */}
+                <button type="button" className="save-button" onClick={handleEditSubmit}>Save</button>
+                <button type="button" className="close-button" onClick={() => {setEditMode(false); setShowModal(false)}}>Cancel</button>
+                </form>
+
+                </>
+            
+                )
+            }
+
+            {deleteMode && (
+                <>
+                <p>Are you sure you want to delete this project?</p>
+                <button type="button" className="close-button" onClick={handleSubmitDelete}> yes </button>
+                <button type="button" className="save-button" style={{ marginLeft: '5px'}} onClick={()=>{setDeleteMode(false); setShowModal(false)}}> No </button>
+                </>
             )}
+
+            </div>
+            </div>
+            )}
+
+            <button type="button" className="Add-button" onClick={() => handleAddClick()}><FontAwesomeIcon icon={faSquarePlus}/> Project</button>
+            
 
             <h2>Project Manager</h2>
             {loading ? <p>Loading Projects...</p> : (
@@ -226,10 +259,9 @@ const ProjectManager = () => {
             </tbody>
             </table>
         )}
-    </div>
-  );
-
-};
+        
+        </>
+    )};
 
 export default ProjectManager;
 

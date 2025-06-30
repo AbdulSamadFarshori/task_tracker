@@ -8,6 +8,7 @@ export const fetchAllProjects = createAsyncThunk('/fetch/projects', async () => 
 });
 
 export const addProject = createAsyncThunk('/add/project/', async (data) => {
+    console.log(data);
     const res = await axios.post('/projects/', data);
     return res.data
 });

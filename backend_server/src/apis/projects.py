@@ -36,7 +36,7 @@ class ProjectApiView(MethodView):
     @bp.response(200, ProjectSchema)
     def post(self, reqs):
         try:
-            user_data = UserModel.query.filter(UserModel.id == reqs['created_by']).first()
+            user_data = UserModel.query.filter(UserModel.id == reqs['owner']).first()
             reqs['users'] = user_data
             data = ProjectModel(**reqs)
             data.save()

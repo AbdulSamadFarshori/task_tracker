@@ -51,8 +51,6 @@ def expired_token_callback(jwt_header, jwt_payload):
 def invalid_token_callback(error):
     auth_header = request.headers.get("Authorization", "")
     token = auth_header.replace("Bearer ", "") if auth_header.startswith("Bearer ") else auth_header
-
-    # Log or print the token (not recommended in production)
     print("Received invalid token:", token)
     return jsonify({"massege":"signature validation failed.", "error":"invalid token"}), 401
 

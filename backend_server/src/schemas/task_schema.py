@@ -13,16 +13,16 @@ class PostTaskSchema(Schema):
     status = fields.Enum(TaskStatus)
     created_by = fields.Int()
     project_id = fields.Int()
-    assignee = fields.Int()
+    assignee_id = fields.Int()
     user_id = fields.Int()
     # creator = fields.Int()
     # project = fields.Int()
 
-class TaskAssignmentSchema(Schema):
-    task_id = fields.Int()
-    user_id = fields.Int()
-    user = fields.Nested(GetUserSchema, many=False)
-    assignee = fields.Nested(GetUserSchema, many=False)
+# class TaskAssignmentSchema(Schema):
+#     task_id = fields.Int()
+#     user_id = fields.Int()
+#     user = fields.Nested(GetUserSchema, many=False)
+#     assignee = fields.Nested(GetUserSchema, many=False)
 
 class GetTaskSchema(Schema):
     id = fields.Int()
@@ -32,14 +32,15 @@ class GetTaskSchema(Schema):
     due_date = fields.Date()
     creator = fields.Nested(GetUserSchema, many=False)
     project =  fields.Nested(ProjectSchema, many=False)
-    assignments = fields.Nested(TaskAssignmentSchema, many=True)
+    assignee = fields.Nested(GetUserSchema, many=False)
     
 class UpdateTaskSchema(Schema):
     id = fields.Int() 
     name = fields.Str(required=False)
     description = fields.Str(required=False)
     due_date = fields.Date()
-    assignee = fields.Int()
+    assignee_id = fields.Int()
+    status = fields.Str()
 
 class UpdateTaskStatus(Schema):
     id = fields.Int()

@@ -3,7 +3,7 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint, abort
 from logger import logger
-from src.models.tasks import TaskModel, TaskAssignmentModel, TaskLogModel
+from src.models.tasks import TaskModel, TaskLogModel
 from src.models.users import UserModel
 from src.models.projects import ProjectModel
 from src.schemas.task_schema import *
@@ -34,13 +34,8 @@ class TaskAPIView(MethodView):
     @bp.response(200, GetTaskSchema)
     def post(self, reqs):
         try: 
-            assignment_data = dict()
-            assignment_data['user_id'] = reqs.pop('assignee')
             data = TaskModel(**reqs)
             data.save()
-            assignment_data['task_id'] = data.id
-            assign_data = TaskAssignmentModel(**assignment_data)
-            assign_data.save()
             return data, 200
         except Exception as e:
             logger.error(e)
@@ -54,15 +49,11 @@ class TaskAPIView(MethodView):
     def put(self, reqs, task_id):
         try:
             data = TaskModel.query.filter(TaskModel.id == task_id).first()
-            assigned_data = TaskAssignmentModel.query.filter(TaskAssignmentModel.task_id == task_id).first()
             if data:
                 for key, value in reqs.items():
                     if key != 'assignee':
                         if value != '' and getattr(data, key) != value :
                             setattr(data, key, value) 
-                    if key == 'assignee':
-                        assigned_data.user_id = value
-                        assigned_data.save()
                 data.save()
                 return data, 200
             else:
@@ -84,6 +75,7 @@ class TaskAPIView(MethodView):
                 return abort(404, message="Task is not available in the database.")
         
         except Exception as e:
+            print(e)
             logger.error(e)
             return jsonify({"status":"error", "msg":f"An unexpected error occurred: {str(e)}"}), 500
         
@@ -94,7 +86,7 @@ class StaffTaskAPIView(MethodView):
     def get(self, user_id):
         try:
             if user_id:
-                temp = TaskAssignmentModel.query.filter(TaskAssignmentModel.user_id == user_id).all()
+                temp = TaskModel.query.filter(TaskModel.user_id == user_id).all()
                 data = [t.task for t in temp]
                 return GetTaskSchema(many=True).dump(data), 200
             else:
@@ -135,6 +127,7 @@ class ProjectTaskAPIView(MethodView):
                 return abort(404, message="project id is none.")
         except Exception as e:
             logger.error(e)
+            print(e)
             return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
 
 

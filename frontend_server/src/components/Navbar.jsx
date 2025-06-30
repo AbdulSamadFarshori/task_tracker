@@ -32,7 +32,7 @@ const Navbar = () => {
             {hasRole('Admin') && (
               <>
                 <li><Link to="/users">Users</Link></li>
-                <li><Link to="/roles">Roles</Link></li>
+                {/* <li><Link to="/roles">Roles</Link></li> */}
               </>
             )}
             <li className="logout-link" onClick={handleLogout}>Logout</li>

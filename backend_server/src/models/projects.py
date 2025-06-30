@@ -19,6 +19,6 @@ class ProjectModel(BaseModel):
     start_date = db.Column(db.Date, default=date.today)
     end_date = db.Column(db.Date, default=date.today)
     status = db.Column(db.Enum(ProjectStatus), default=ProjectStatus.NEW)
-    created_by = db.Column(db.Integer, db.ForeignKey('users.id'))
+    owner = db.Column(db.Integer, db.ForeignKey('users.id'))
     users = db.relationship("UserModel", backref="projects")
     tasks = db.relationship("TaskModel", back_populates="project", lazy="dynamic", cascade="all, delete, delete-orphan")

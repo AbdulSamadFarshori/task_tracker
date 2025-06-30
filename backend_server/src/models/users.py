@@ -15,7 +15,7 @@ class UserModel(BaseModel):
     email = db.Column(db.String(225), nullable=False)
     roles = db.relationship('UserRoleModel', back_populates='user', cascade='all, delete')
     created_tasks = db.relationship('TaskModel', back_populates ='creator', foreign_keys='TaskModel.created_by')
-    assigned_tasks = db.relationship('TaskAssignmentModel', back_populates='assignee', foreign_keys='TaskAssignmentModel.user_id')
+    assigned_tasks = db.relationship('TaskModel', back_populates='assignee', foreign_keys='TaskModel.assignee_id')
 
     @validates('email')
     def validate_email(self, key: str, value: str):
