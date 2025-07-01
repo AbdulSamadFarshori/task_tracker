@@ -73,7 +73,7 @@ useEffect(() => {
                 name: task.name,
                   description: task.description,
                   due_date:task.due_date,
-                  assignee_id: task.assignee.id,
+                  assignee_id: task.assignee?.id,
                   status: task.status
     })
     console.log(editTask)
