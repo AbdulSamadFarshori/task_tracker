@@ -224,7 +224,7 @@ useEffect(() => {
                     {task.status === "IN_PROGRESS"?"In-Progress":task.status === "NEW"?"New":task.status === "COMPLETED"? "Completed": "-"}
                 </td>
                 <td>{task.creator?.username}</td>
-                <td>{task.assignee.username}</td>
+                <td>{task.assignee?.username}</td>
                 <td>
                     {task.status === 'IN_PROGRESS' && (
                     <button className="status-button" onClick={() => handleStatusUpdate(task.id, 'COMPLETED')}>
