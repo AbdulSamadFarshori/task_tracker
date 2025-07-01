@@ -165,10 +165,10 @@ useEffect(() => {
         <label><h5>Due-Date</h5></label>
         <input name="due_date" type="date" value={editTask.due_date} onChange={handleEditChange} />
         <label><h5>Owner</h5></label>
-        <select name="assignee" value={editTask.assignee} onChange={handleEditChange} required>
+        <select name="assignee_id" value={editTask.assignee} onChange={handleEditChange} required>
             <option value="">Select...</option>
                 {userName.map((data, idx)=>(
-                        <option key={idx} value={data.id}>{data.username}</option>
+                        data.roles[0].role.name === "Read-Only" ?<option key={idx} value={data.id}>{data.username}</option>: <></>
                 ))}
         </select>
         <label><h5>Status</h5></label>

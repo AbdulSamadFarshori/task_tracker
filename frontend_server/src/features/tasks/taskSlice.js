@@ -13,13 +13,11 @@ export const fetchProjectAllTasks = createAsyncThunk('tasks/project/fetchAll', a
 });
 
 export const createTask = createAsyncThunk('tasks/create', async (taskData) => {
-  console.log(taskData);
   const res = await axios.post('/tasks/', taskData);
   return res.data;
 });
 
 export const updateTask = createAsyncThunk('tasks/update', async (data) => {
-  console.log(data);
   const res = await axios.put(`/tasks/${data.id}`, data);
   return res.data;
 });
