@@ -74,9 +74,9 @@ useEffect(() => {
                     ))}
                   </select>
                 </td>
-                <td>
+                {/* <td>
                   <button onClick={() => handleSubmit(user.id)}>Update</button>
-                </td>
+                </td> */}
               </tr>
             );
           })}

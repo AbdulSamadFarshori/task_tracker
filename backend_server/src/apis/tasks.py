@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_smorest import Blueprint, abort
 from logger import logger
 from src.models.tasks import TaskModel, TaskLogModel
@@ -86,9 +86,8 @@ class StaffTaskAPIView(MethodView):
     def get(self, user_id):
         try:
             if user_id:
-                temp = TaskModel.query.filter(TaskModel.user_id == user_id).all()
-                data = [t.task for t in temp]
-                return GetTaskSchema(many=True).dump(data), 200
+                temp = TaskModel.query.filter(TaskModel.assignee_id == user_id).all()
+                return GetTaskSchema(many=True).dump(temp), 200
             else:
                 return abort(404, message="user id is none.")
         
@@ -139,11 +138,18 @@ class TaskStatusChangeApiView(MethodView):
     @bp.response(200, GetTaskSchema(many=False))
     def put(self, reqs, task_id):
         try:
+            username = get_jwt_identity()
+            user_data = UserModel.query.filter(UserModel.username == username).first()
+            role = user_data.roles[0].role.name
             new_status = reqs.get('status')
-            changed_by = reqs.get('changed_by')
             data = TaskModel.query.filter(TaskModel.id == task_id).first()
+            if role == 'Read-Only':
+                if data.assignee_id != user_data.id:
+                    return jsonify({"status": "error", "msg": "Bad Request.."}), 302
+            changed_by = user_data.id
             old_status = data.status
             data.status = new_status
+            data.save()
             status_log = TaskLogModel(task_id=task_id, 
                                       old_status=old_status, 
                                       new_status=new_status, 

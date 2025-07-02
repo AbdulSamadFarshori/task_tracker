@@ -7,9 +7,9 @@ import {
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faScrewdriverWrench, faSquareCheck, faSquarePlus } from '@fortawesome/free-solid-svg-icons';
-
-
 import { toast } from 'react-toastify';
+import './TaskManager.css'
+
 
 
 const TaskManager = () => {
@@ -46,7 +46,7 @@ const TaskManager = () => {
               <th>Description</th>
               <th>Due Date</th>
               <th>Status</th>
-              <th>Assigner</th>
+              <th>Project Name</th>
               <th>Assignee</th>
               <th>Actions</th>
             </tr>
@@ -60,17 +60,17 @@ const TaskManager = () => {
                 <td>
                     {task.status === "IN_PROGRESS"?"In-Progress":task.status === "NEW"?"New":task.status === "COMPLETED"? "Completed": "-"}
                 </td>
-                <td>{task.creator?.username}</td>
-                <td>{task.assignments[0].assignee.username}</td>
+                <td>{task.project?.name}</td>
+                <td>{task.assignee?.username}</td>
                 <td>
                     {task.status === 'IN_PROGRESS' && (
-                    <button onClick={() => handleStatusUpdate(task.id, 'COMPLETED')}>
+                    <button className="status-button" onClick={() => handleStatusUpdate(task.id, 'COMPLETED')}>
                       <FontAwesomeIcon icon={faSquareCheck}/> Completed
                     </button>
                   )}
                   {
                     task.status === 'NEW' && (
-                    <button onClick={() => handleStatusUpdate(task.id, 'IN_PROGRESS')}>
+                    <button className="status-button" onClick={() => handleStatusUpdate(task.id, 'IN_PROGRESS')}>
                       <FontAwesomeIcon icon={faSquareCheck}/> In-Progress
                     </button>
                   )

@@ -165,7 +165,7 @@ useEffect(() => {
         <label><h5>Due-Date</h5></label>
         <input name="due_date" type="date" value={editTask.due_date} onChange={handleEditChange} />
         <label><h5>Owner</h5></label>
-        <select name="assignee_id" value={editTask.assignee} onChange={handleEditChange} required>
+        <select name="assignee_id" value={editTask.assignee_id} onChange={handleEditChange} required>
             <option value="">Select...</option>
                 {userName.map((data, idx)=>(
                         data.roles[0].role.name === "Read-Only" ?<option key={idx} value={data.id}>{data.username}</option>: <></>

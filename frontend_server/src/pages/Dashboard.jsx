@@ -44,7 +44,7 @@ const Dashboard = () => {
               <p>View, edit, or delete users.</p>
             </Link>
 
-            <Link to="/roles" className="dash-card">
+            <Link to="/unauthorized" className="dash-card">
               <h3><FontAwesomeIcon icon={faKey} /> Role Management</h3>
               <p>Assign roles to users.</p>
             </Link>

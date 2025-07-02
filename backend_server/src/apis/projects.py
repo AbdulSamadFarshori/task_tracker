@@ -103,7 +103,7 @@ class GetProjectByUserId(MethodView):
     def get(self, user_id):
         try:
             if user_id:
-                data = ProjectModel.query.filter(ProjectModel.created_by == user_id).all()
+                data = ProjectModel.query.filter(ProjectModel.owner == user_id).all()
                 return ProjectSchema(many=True).dump(data)
             return abort(404, message="user id is none.")
         except Exception as e:
