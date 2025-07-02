@@ -88,6 +88,7 @@ class UsersCRUDApiViews(MethodView):
                 return jsonify({"id":idx}), 201
         except Exception as e:
             logger.error(e)
+            print(e)
             return jsonify({"status":"error", "msg": f"An unexpected error occurred: {str(e)}"}), 500
         
 

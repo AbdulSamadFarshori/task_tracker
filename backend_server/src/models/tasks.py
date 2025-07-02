@@ -16,9 +16,9 @@ class TaskModel(BaseModel):
     description = db.Column(db.Text, nullable=False)
     due_date = db.Column(db.Date, default=date.today)
     status = db.Column(db.Enum(TaskStatus), default=TaskStatus.NEW)
-    created_by = db.Column(db.Integer, db.ForeignKey("users.id"), unique=False, nullable=False)
-    project_id = db.Column(db.Integer, db.ForeignKey("projects.id"), unique=False, nullable=False)
-    assignee_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    created_by = db.Column(db.Integer, db.ForeignKey("users.id", ondelete='CASCADE'), unique=False, nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey("projects.id", ondelete='CASCADE'), unique=False, nullable=False)
+    assignee_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
     creator = db.relationship("UserModel", back_populates='created_tasks', foreign_keys=[created_by])
     project = db.relationship("ProjectModel", back_populates='tasks')
     assignee = db.relationship('UserModel', back_populates='assigned_tasks', foreign_keys=[assignee_id])
@@ -38,7 +38,7 @@ class TaskLogModel(BaseModel):
     task_id = db.Column(db.Integer, db.ForeignKey('tasks.id', ondelete='CASCADE'), nullable=False)
     old_status = db.Column(db.Enum(TaskStatus))
     new_status = db.Column(db.Enum(TaskStatus))
-    changed_by = db.Column(db.Integer, db.ForeignKey('users.id'))
+    changed_by = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
 
 
 

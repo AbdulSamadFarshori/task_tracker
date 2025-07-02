@@ -210,7 +210,7 @@ const ProjectManager = () => {
             </div>
             )}
 
-            <button type="button" className="Add-button" onClick={() => handleAddClick()}><FontAwesomeIcon icon={faSquarePlus}/> Project</button>
+            {hasRole('Admin') &&(<button type="button" className="Add-button" onClick={() => handleAddClick()}><FontAwesomeIcon icon={faSquarePlus}/> Project</button>)}
             
 
             <h2>Project Manager</h2>
